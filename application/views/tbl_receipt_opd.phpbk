@@ -1,0 +1,152 @@
+<div class="col-md-12">
+              <div class="card">
+                <div class="col-md-12">
+                       <div class="card-header card-header-primary">
+                  <h4 class="card-title ">Receipt</h4>
+                  <p class="card-category"> Receipt Master</p>
+                </div>
+                <br>
+                <form action="<?=base_url('/master/update');?>" method="post" id="save_data">
+                  <input type="hidden" name="ID" value="<?=$data->ID;?>">
+                  <input type="hidden" name="series" id="Series" value="<?=$data->series;?>">
+                  <input type="hidden" name="opdno" value="<?=$data->opdno;?>">
+                  <input type="hidden" name="tbl" value="<?=$tbl;?>">
+                    <div class="row">
+                       
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Receipt Date</label>
+                          <input type="text" class="form-control" name="ddate" value="<?=($data->ddate) ? date('m/d/Y', strtotime($data->ddate)) : date('m/d/Y');?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Receipt Time</label>
+                          <input type="text" class="form-control" name="ttime"  value="<?=($data->ttime);?>">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">CR No.</label>
+                          <input type="text" class="form-control fetch_data" id="CRNO" name="recno"  value="<?=($data->recno);?>">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Patiant Name</label>
+                          <input type="text" class="form-control" id="PName" value="<?=$data->PName;?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Age</label> (In Year, Months or Days)
+                          <input type="text" class="form-control" id="Age" value="<?=$data->Age;?>" required="required">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Address</label>
+                          <input type="text" class="form-control" id="Address" value="<?=$data->Address;?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Bed No.</label>
+                          <?php echo form_dropdown('bedid', $bedids, $data->bedid, 'class="form-control"'); ?>    
+                        </div>
+                      </div>
+                    </div>
+             <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Sex</label>
+                         <?php echo form_dropdown('', array('M' => 'Male', 'F' => 'Female'), $data->Sex, 'class="form-control" id="Sex"'); ?>    
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Weight</label>
+                          <input type="text" class="form-control" id="Weight" value="<?=$data->Weight;?>" required="required">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Suger</label>
+                          <input type="text" class="form-control" id="Occupation" value="<?=$data->Occupation;?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">BP</label>
+                          <input type="text" class="form-control" id="Charges" value="<?=$data->Charges;?>" required="required">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Diagnosis</label>
+                          <input type="text" class="form-control" id="Diagnosis" name="diagnosis" value="<?=$data->diagnosis;?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Complain</label>
+                          <input type="text" class="form-control" id="Income" value="<?=$data->Income;?>" required="required">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Department</label>
+                         <?php echo form_dropdown('department', $departments, $data->department, 'class="form-control" id="Department"'); ?>    
+                        </div>
+                      </div>
+                       <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Testing Doctor</label>
+                         <?php echo form_dropdown('doctorname', $doctors, $data->DoctorName, 'class="form-control" id="DoctorName"'); ?>    
+                        </div>
+                      </div>
+                    </div>
+                                       
+                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <div class="clearfix"></div>
+                     </form>
+ </div>           
+</div>
+</div>
+<script>
+$('.fetch_data').on('focusout', function(){
+
+//alert($(this).val());
+
+$.get("<?=base_url('/master/get_data/tbl_opd_patient/CRNO/');?>" + $(this).val(), function(data){
+  //alert(jQuery.parseJSON(data));
+  console.log($.parseJSON(data));
+  //console.log(Object.keys($.parseJSON(data)));
+
+  $.each($.parseJSON(data), function (idx, val) {
+      console.log(idx);
+      console.log(val);
+      $('[id="'+idx+'"]').val(val);
+    });
+
+ // for (var key in arr) {   console.log(data[key]);
+ //$('[name="'+key+'"]').val(data[key]);
+//}
+
+//console.log(data);
+       }); 
+
+
+});
+</script>
