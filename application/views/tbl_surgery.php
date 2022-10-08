@@ -15,19 +15,25 @@
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Admit Date</label>
-                          <input type="text" class="form-control" data-toggle="datepicker" id="doa" value="<?=($data->doa) ? date('m/d/Y', strtotime($data->doa)) : date('m/d/Y');?>">
+                          <input type="text" class="form-control" data-toggle="datepicker" id="doa" value="<?=($data->doa) ? date('d/m/Y', strtotime($data->doa)) : date('d/m/Y');?>">
                         </div>
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Date</label>
-                          <input type="text" data-toggle="datepicker" class="form-control exclude" name="sdate" value="<?=($data->sdate) ? date('m/d/Y', strtotime($data->sdate)) : date('m/d/Y');?>">
+                          <input type="text" data-toggle="datepicker" class="form-control exclude" name="sdate" value="<?=($data->sdate) ? date('d/m/Y', strtotime($data->sdate)) : date('d/m/Y');?>">
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-md-2">
                         <div class="form-group">
                           <label class="bmd-label-floating">CRNO.</label>
                           <input type="text" class="form-control fetch_data exclude" id="CRNO" name="CRNO"  value="<?=($data->CRNO);?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">IPDNO.</label>
+                          <input type="text" class="form-control" id="ipdno"  readonly value="<?=($data->ipdno);?>">
                         </div>
                       </div>
                     </div>
@@ -153,25 +159,23 @@
                         </div>
                       </div>
                     </div>             
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
-                    <button type="button" class="btn btn-primary pull-right"  id="print">Print </button>
+                    <button type="submit" class="btn btn-primary pull-right" id="save_button">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
 </div>
 </div>
-<script type="text/javascript">  
-            $('#print').click(function(){ 
-var url = "<?=base_url('/master/print_data/tbl_surgery/');?>" + $('#CRNO').val();
-$('<form action="'+url+'" target="_blank" method="POST"></form>').appendTo('body').submit();
-});                
-</script>
+
 <script type="text/javascript">
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });           
-      </script> 
-<script>
+$( "#save_data" ).submit(function(event) {
+$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+  $( this ).submit();
+});
 /////////////////////////////////////////////////////////////////////////////////////////////
 $('.fetch_data').on('focusout', function(){
   sate_form_data($(this).val());

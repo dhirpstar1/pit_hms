@@ -3,49 +3,50 @@
           <div class="row">
             <div class="col-md-12 pull-right">
 
-            <button type="button" class="btn btn-primary pull-right add_item">Add</button>
+            
 </div>
              <div id="load_view" class="col-md-12"></div>
 
             <div class="clearfix"></div>
             
  <div class="col-md-12">
-
- <div id="load_view" class="col-md-12">
+            <div id="load_view" class="col-md-12">
                <form action="<?=base_url('/master/index/tbl_opd_patient');?>" method="post" id="serch_data">
                   <input type="hidden" name="tbl" value="<?=$tbl;?>">
-              <div class="col-md-3 col-sm-12 pull-left">
+                  <div class="col-md-2 col-sm-12 pull-left">
+                    <span class="serchLabel">From</span><br>
                     <div class="input-append">
-        <input size="16" type="text" value="<?=($startDate) ? $startDate : date('m/d/Y');?>" id="startDate" name="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
+                    <input size="16" type="text" value="<?=($startDate) ? $startDate : date('d/m/Y');?>" id="startDate" name="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
+                    <span class="add-on"><i class="icon-remove"></i></span>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    </div>
+            </div>
+
+       <div class="col-md-2 col-sm-12 pull-left">
+                    <span class="serchLabel">To</span><br>
+                    <div class="input-append">
+        <input size="16" type="text" value="<?=($endDate) ? $endDate : date('d/m/Y');?>" id="endDate" name="endDate" class="form-control" data-toggle="datepicker" placeholder="End Date" autocomplete="off">
         <span class="add-on"><i class="icon-remove"></i></span>
         <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
-
-       <div class="col-md-3 col-sm-12 pull-left">
-                    <div class="input-append">
-        <input size="16" type="text" value="<?=($endDate) ? $endDate : date('m/d/Y');?>" id="endDate" name="endDate" class="form-control" data-toggle="datepicker" placeholder="End Date" autocomplete="off">
-        <span class="add-on"><i class="icon-remove"></i></span>
-        <span class="add-on"><i class="icon-th"></i></span>
-        </div>
+      <div class="col-md-2 col-sm-12 pull-left">
+              <span class="serchLabel">Department</span><br>
+              <?php echo form_dropdown('Department', $departments, $Department, 'class="form-control" id="Department"'); ?>    
       </div>
-      <div class="col-md-3 col-sm-12 pull-left">
-      <?php echo form_dropdown('Department', $departments, $Department, 'class="form-control" id="Department"'); ?>    
-      </div>
-       <div class="col-md-3 col-sm-12 pull-left">
-       <button type="button" class="btn btn-primary pull-right" id="print">Print </button>
-
-                    <button type="submit" class="btn btn-primary pull-left">Search</button>
-      </div>
+       <div class="col-md-6 col-sm-12 pull-right" style=padding:0px;>
+        <button type="submit" class="btn btn-primary">Search <i class="fa fa-search srchIcn" aria-hidden="true"></i></button>
+	      <button type="button" class="middleBtn btn btn-primary" id="print">Print <i class="fa fa-print prntIcn" aria-hidden="true"></i></button>
+        <button type="button" class="btn btn-primary add_item pull-right">Add New Patient <i class="fa fa-plus-circle addIcn" aria-hidden="true"></i></button>
+       </div>
       <script type="text/javascript" src="<?=base_url('/assets/js/datepicker.min.js');?>" charset="UTF-8"></script>
-<script type="text/javascript">
+      <script type="text/javascript">
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
-          });
-
-            
-    </script> 
-                     </form>
+            autoHide:true,
+			format: 'dd/mm/yyyy'
+          });         
+      </script>                     
+              </form>
             </div>
             <div class="modal fade" id="printModal" tabindex="-1" role="dialog" aria-labelledby="printModalLabel" aria-hidden="true">
 </div>
@@ -65,27 +66,52 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
                   <p class="card-category">Today OPD Status</p>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
+                     <div class="table-responsive"  style="max-height: 500px; width: 100%;overflow: auto;">
                     <?php if($listings) :?>
-                    <table class="table">
-                      <thead class=" text-primary">
-                        <th width="20">ID</th>
-                        <th> CR No.</th>
-                        <th> OLD No.</th>
+				          <table class="table" class="table table-bordered table-striped" style="font-size: 12px;padding:0px;margin:0px;">
+                      <thead  style="text-align:right; white-space:nowrap;width:99%;">
+					              <th>Action</th>  
+                        <th width="2%">ID</th>
+                        <th width="7%"> CR No.</th>
+                        <th width="8%"> OLD No.</th>
                         <th> Date</th> 
-                        <th> Patient Name</th>
+                        <th width="13%"> Patient Name</th>
                         <th> M/F</th>
                         <th> Age</th>
                         <th> Address</th>
                         <th> Diagnosis</th>
-                        <th> Department</th>
+                        <th width="15%"> Department</th>
                         <th> Doctor</th> 
-                        <th>Action</th>                     
+                                           
                       </thead>
-                      <tbody>
-                      <?php $count = 1; foreach($listings as $listing): //print_r($listing); exit;?>
+                      <tbody style="text-align:center; white-space:nowrap;width:99%;">
+                      <?php $count = (($page) ? $page : 0) + 1; foreach($listings as $listing): //print_r($listing); exit;?>
 
                         <tr id="row_<?=$listing->ID;?>">
+						<td class="td-actions text-right">
+                          <div class="dropdown">
+  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+  <i class="material-icons">menu</i>
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><a href="#" class="edit_item" id="<?=$listing->ID;?>">Edit</a></li>
+    <li><a href="#" class="view_item" data-table="tbl_opd_treatment" data-id="<?=$listing->CRNO;?>">OPD Treatment</a></li>
+    <li><a href="#" class="view_item" data-table="tbl_ipd_patient" data-id="<?=$listing->CRNO;?>">IPD Register</a></li>
+    <li><a href="#" class="view_item" data-table="tbl_panchkarma" data-id="<?=$listing->CRNO;?>">Panchkarma</a></li>
+    <?php if($listing->Sex == 'F'): ?>
+    <li><a href="#" class="view_item" data-table="tbl_gynec" data-id="<?=$listing->CRNO;?>">Gynec</a></li>
+    <li><a href="#" class="view_item" data-table="tbl_anc_register" data-id="<?=$listing->CRNO;?>">ANC</a></li>
+    <?php endif; ?>
+    <li><a href="#" class="view_item" data-table="tbl_physio" data-id="<?=$listing->CRNO;?>">Physio</a></li>
+    <li><a href="#" class="view_item" data-table="tbl_diet" data-id="<?=$listing->CRNO;?>">Diet</a></li>
+    <li><a href="#" class="view_item" data-table="n_report_testm" data-id="<?=$listing->CRNO;?>">Lab</a></li>
+    <li><a href="#" class="view_item" data-table="tbl_x_ray" data-id="<?=$listing->CRNO;?>">X-Ray</a></li>
+
+  </ul>
+</div> 
+                          
+                              
+                            </td>
                           <td>
                             <?=$count;//$listing->ID;?>
                           </td>
@@ -119,25 +145,7 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
                           <td>
                           <?=$listing->DoctorName;?>
                           </td>
-                          <td class="td-actions text-right">
-                          <div class="dropdown">
-  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-  <i class="material-icons">menu</i>
-  <span class="caret"></span></button>
-  <ul class="dropdown-menu">
-    <li><a href="#" class="edit_item" id="<?=$listing->ID;?>">Edit</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_opd_treatment" data-id="<?=$listing->CRNO;?>">OPD Treatment</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_ipd_patient" data-id="<?=$listing->CRNO;?>">IPD Register</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_panchkarma" data-id="<?=$listing->CRNO;?>">Punchkarma</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_gynec" data-id="<?=$listing->CRNO;?>">Gynec</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_physio" data-id="<?=$listing->CRNO;?>">Physio</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_diet" data-id="<?=$listing->CRNO;?>">Diet</a></li>
-    <li><a href="#" class="view_item" data-table="tbl_anc_register" data-id="<?=$listing->CRNO;?>">ANC</a></li>
-  </ul>
-</div> 
                           
-                              
-                            </td>
                         </tr>
                       <?php $count++; endforeach; ?>
                       </tbody>

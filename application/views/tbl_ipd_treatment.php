@@ -10,7 +10,7 @@
                     <input type="hidden" name="series" id="Series" value="<?=$data->Series;?>">
                     <input type="hidden" name="crno" id="CRNO" value="<?=($data->crno) ? $data->crno : $data->CRNO;?>">
                     <input type="hidden" name="tbl" value="tbl_ipd_treatment">
-                    <input type="hidden" name="ddate" value="<?=date('Y-m-d h:i');?>">            
+                    <input type="hidden" name="ddate" value="<?=date('d/m/Y');?>">            
                     <div class="row">
                       <div class="col-md-4">
                       <div class="form-group">
@@ -37,13 +37,16 @@
                         </div>
                       </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary pull-right">Save </button>
+                        <button type="submit" id="save_button_med" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     </div>
                     <div class="clearfix"></div>
                       </form>
                       <script type="text/javascript">
 
                       $("#save_data").submit(function(event){
+						  $('#save_button_med').attr('disabled','disabled');
+						$('#save_button_med').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+    event.preventDefault(); //prevent default action
     event.preventDefault(); //prevent default action
     var post_url = $(this).attr("action"); //get form action url
     var request_method = $(this).attr("method"); //get form GET/POST method
@@ -53,7 +56,8 @@
         type: request_method,
         data : form_data
     }).done(function(response){ 
-    //console.log(response);
+    $('#save_button_med').html('Save <i class="fa fa-save addIcn" aria-hidden="true"></i>');
+	$('#save_button_med').attr('disabled', false);	
       $('#id_ipd_trt').val('');
       $('#qty').val('');
       $('#dose').val('');

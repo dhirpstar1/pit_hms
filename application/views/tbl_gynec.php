@@ -12,17 +12,32 @@
                   <input type="hidden" name="tbl" value="<?=$tbl;?>">
                     <div class="row">
                        
-                      <div class="col-md-6">
+                      <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Date</label>
-                          <input type="text" class="form-control exclude" name="doa" value="<?=($data->doa) ? date('m/d/Y', strtotime($data->doa)) : date('m/d/Y');?>" required="required">
+                          <input type="text" class="form-control exclude" name="doa" id="doa" data-toggle="datepicker" value="<?=($data->doa) ? date('d/m/Y', strtotime($data->doa)) : date('d/m/Y');?>" required="required">
                         </div>
                       </div>
-                      <div class="col-md-6">
+
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">DOG</label>
+                          <input type="text" class="form-control" name="gdate" data-toggle="datepicker" id="gdate" value="<?=($data->gdate) ? date('d/m/Y', strtotime($data->gdate)) : date('d/m/Y');?>" required="required">
+                        </div>
+                      </div>
+
+                      <div class="col-md-2">
                         <div class="form-group">
                           <label class="bmd-label-floating">CR No.</label>
                           <?=get_year_code();?>
                           <input type="text" class="form-control fetch_data exclude" id="CRNO" name="Crno"  value="<?=($data->Crno);?>">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">IPD No.</label>
+                          <?=get_year_code();?>
+                          <input type="text" class="form-control fetch_data" id="ipdno"  readonly  value="<?=($data->ipdno);?>">
                         </div>
                       </div>
                     </div>
@@ -69,7 +84,7 @@
                     </div>
                     <?php endforeach; ?>
                     </div>                  
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" id="save_button" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
@@ -77,6 +92,15 @@
 </div>
 <script>
 /////////////////////////////////////////////////////////////////////////////////////////////
+$( "#save_data" ).submit(function(event) {
+$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+  $( this ).submit();
+});
+$('[data-toggle="datepicker"]').datepicker({
+            autoHide:true,
+			format: 'dd/mm/yyyy'
+          });
 $('.fetch_data').on('focusout', function(){
   sate_form_data($(this).val());
 });   

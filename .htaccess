@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
      
     RewriteEngine On
-    RewriteBase /hms/
+    RewriteBase /
  
     # Disable rewrite for valid directory/files     
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -10,3 +10,6 @@
     #map all request urls to a specific controller method
     RewriteRule ^(.*)$ index.php?/{controller}/{method}/$1 [L]
 </IfModule>
+
+
+

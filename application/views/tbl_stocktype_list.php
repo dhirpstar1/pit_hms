@@ -3,7 +3,7 @@
           <div class="row">
              <div class="col-md-12 pull-right">
 
-            <button type="button" class="btn btn-primary pull-right add_item">Add</button>
+            <button type="button" class="btn btn-primary pull-right add_item">Add <i class="fa fa-plus-circle addIcn" aria-hidden="true"></i></button>
 </div>
             <div id="load_view" class="col-md-12"></div>
  <div class="col-md-12">

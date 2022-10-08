@@ -12,16 +12,22 @@
                   <input type="hidden" name="series" value="<?=get_year_code();?>">
                     <div class="row">
                        
-                      <div class="col-md-6">
+                      <div class="col-md-8">
                         <div class="form-group">
                           <label class="bmd-label-floating">ANC Date</label>
-                          <input type="text" class="form-control exclude" data-toggle="datepicker" name="ddate" value="<?=($data->ddate) ? date('m/d/Y', strtotime($data->ddate)) : date('m/d/Y');?>" required="required">
+                          <input type="text" class="form-control exclude" data-toggle="datepicker" name="ddate" value="<?=($data->ddate) ? date('d/m/Y', strtotime($data->ddate)) : date('d/m/Y');?>" required="required">
                         </div>
                       </div>
-                      <div class="col-md-6">
+                      <div class="col-md-2">
                         <div class="form-group">
                           <label class="bmd-label-floating">CR NO.</label><?=get_year_code();?>
                           <input type="text" class="form-control fetch_data exclude" name="crno"  value="<?=($data->crno) ? $data->crno : $next_cr_no;?>">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">IPD NO.
+                          <input type="text" class="form-control" id="ipdno" readonly value="<?=$ipdno;?>">
                         </div>
                       </div>
                     </div>
@@ -128,15 +134,22 @@
                         </div>
                       </div>
                     </div>                                       
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" id="save_button" class="btn btn-primary pull-right">Save</button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
 </div>
 </div>
 <script type="text/javascript">
+		$( "#save_data" ).submit(function(event) {
+		$('#save_button').attr('disabled','disabled');
+		$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+		  $( this ).submit();
+		});
+		
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });           
       </script> 
 <script>

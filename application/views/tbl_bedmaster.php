@@ -41,7 +41,7 @@
                     -->
                      </div>
                                        
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           

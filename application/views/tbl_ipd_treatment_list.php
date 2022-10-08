@@ -14,19 +14,19 @@
                     <input type="hidden" id="OPDID" name="ID" value="<?=$data->ID;?>">
                     <input type="hidden" name="CRNO" id="CRNO" value="<?=$data->crno;?>">
                     <input type="hidden" name="tbl" value="tbl_opd_patient">
-                
+                <input type="hidden" name="series" value="<?=get_year_code();?>">
                     <div class="row">
                        
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Doses Date</label>
-                          <input type="text" class="form-control exclude" value="<?=($data->doa) ? date('m/d/Y', strtotime($data->doa)) : date('m/d/Y');?>" readonly>
+                          <input type="text" class="form-control exclude" value="<?=($data->doa) ? date('d/m/Y', strtotime($data->doa)) : date('d/m/Y');?>" readonly>
                         </div>
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">CR No. OPD NO.</label>
-                          <input type="text" class="form-control fetch_data exclude" id="CRNO" value="<?=($data->crno);?>">
+                          <input type="text" class="form-control fetch_data exclude" id="CRNO" value="<?=($data->crno);?>" required readonly>
                         </div>
                       </div>
                     </div>
@@ -34,13 +34,13 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Patiant Name</label>
-                          <input type="text" class="form-control" id="PName" name="PName" value="<?=$data->PName;?>" >
+                          <input type="text" class="form-control" id="PName" name="PName" value="<?=$data->PName;?>" required>
                         </div>
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">IPD NO </label> 
-                          <input type="text" class="form-control" id="ipdno" value="<?=$data->ipdno;?>" readonly>
+                          <input type="text" class="form-control" id="ipdno" value="<?=$data->ipdno;?>" readonly required>
                         </div>
                       </div>
                     </div>
@@ -106,7 +106,7 @@
                  
                      
                     </div>
-<b>Investigation</b>
+                  <b>Investigation</b>
                     <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -122,7 +122,7 @@
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Others</label>
+                          <label class="bmd-label-floating"> Lab Investigation</label>
                           <input type="text" class="form-control"  id="other" name="other" value="<?=$data->other;?>">
                         </div>
                       </div>
@@ -143,8 +143,8 @@
                       </div>
                       <div class="col-md-3">
                       <div class="form-group">
-                      <button type="button" class="btn btn-primary pull-left"  id="print">Print </button>
-                      <button type="submit" class="btn btn-primary pull-right">Save </button>
+                      <button type="button" class="btn btn-primary pull-left"  id="print">Print <i class="fa fa-print prntIcn" aria-hidden="true"></i></button>
+                      <button type="submit" id="save_button" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                         </div>
                       </div>
                     </div>
@@ -162,17 +162,22 @@
 var url = "<?=base_url('/master/print_data/tbl_ipd_patient/');?>" + $('#CRNO').val();
 $('<form action="'+url+'" target="_blank" method="POST"></form>').appendTo('body').submit();
 });                
-  $("#save_form_data").submit(function(event){
+  $("#save_form_data").submit(function(event){ 
+	$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
     event.preventDefault(); //prevent default action
     var post_url = $(this).attr("action"); //get form action url
     var request_method = $(this).attr("method"); //get form GET/POST method
     var form_data = $(this).serialize(); //Encode form elements for submission
-    $.ajax({
+	//console.log(form_data);
+	    $.ajax({
         url : post_url,
         type: request_method,
         data : form_data
     }).done(function(response){ //
-     // console.log(response);
+	$('#save_button').html('Save <i class="fa fa-save addIcn" aria-hidden="true"></i>');
+	$('#save_button').attr('disabled', false);	
+    //  console.log(response);
     });
 });
                       </script>  
@@ -193,7 +198,10 @@ function sate_form_data(set_id){
   $('.fetch_data').val(set_id);
   $("#load_view").load("<?=base_url('/master/update/tbl_ipd_treatment');?>"); 
   $("#load_view_list").load("<?=base_url('/master/get_custom_list/tbl_ipd_treatment/crno/');?>"  + set_id);
-  $.get("<?=base_url('/master/get_data/tbl_opd_patient/CRNO/');?>" + set_id, function(data){
+  $.get("<?=base_url('/master/get_data/tbl_ipd_patient/CRNO/');?>" + set_id, function(data){
+	  
+	  console.log($.parseJSON(data));
+	  
   if($.parseJSON(data)){
   $.each($.parseJSON(data), function (idx, val) {
       $('[id="'+idx+'"]').val(val).change();

@@ -1,12 +1,14 @@
-<h1></h1>
+<div align="center" style="color:#000000;">
+<h3>Surgery Report</h6>
+</div> 
 <table cellspacing="5" cellpadding="5" width="100%" style="font-size:10px!importantd;">
    <tr>
       <td width="15%"><b>Name of Patient</b></td>
       <td width="15%"><?=$data->PName;?></td>
       <td width="15%"><b>Age</b></td>
       <td width="15%"><?=$data->Age;?></td>
-      <td width="15%"><b>IPD NO.</b></td>
-      <td width="15%" colspan="2"><?=$data->CRNO;?></td>
+      <td width="15%"><b>IPD NO.</b> - <?=$data->ipdno;?></td>
+      <td width="15%" colspan="2"><b>CRNO.</b><?=$data->CRNO;?></td>
     </tr><hr>
     <tr><td colspan="8"></td></tr>
     <tr>
@@ -36,7 +38,7 @@
     </tr><hr>
     <tr>
       <td><b>Pre - Operative Medication:</b></td>
-      <td><?php if($data->preoperative_medication == 1){ ?> Yes <?php } ?></td>
+      <td><?php if($data->preoperative_medication == 1){ ?> Yes <?php }else { ?> No <?php } ?></td>
       <td><b>Surgery Major/Minor:</b></td>
       <td><?php if($data->surgery_major_minor == 1){ ?> Major <?php }else{ ?> Minor <?php } ?><?=$data->department;?></td>
       <td><b>Begins at:</b></td>

@@ -4,28 +4,29 @@
   <h2></h2>
 <?php
 if($listings) : ?>
-                    <table class="table" style="font-size:9px!important;text-align:center;" cellspacing="2" cellpadding="2">
+                    <table class="table" style="font-size:9px!important;text-align:left;" cellspacing="2" cellpadding="2">
                       <tr class=" text-primary">
-                        <th width="20">ID</th>
-                        <th> CR No.</th>
-                        <th width="80"> Date </th>
-                        <th> No. Days </th>
-                        <th> Bed No.</th>          
-                        <th> Patient Name</th>
-                        <th> M/F</th>
-                        <th> Age</th>
-                        <th> Address</th>
-                        <th> Diagnosis</th>
-                        <th> Department</th>
-                        <th> Doctor</th> 
+                        <td width="20">ID</td>
+                        <td width="50">CR No.</td>
+                        <td width="40">IPD NO</td>
+                        <th>Dis. Date </th>
+                        <th width="40">No. Days </th>
+                        <th width="100">Bed No.</th>          
+                        <th width="140">Patient Name</th>
+                        <th width="40">M/F</th>
+                        <th width="40">Age</th>
+                        <th width="100">Address</th>
+                        <th>Diagnosis</th>
+                        <th width="100">Department</th>
+                        <th width="100">Doctor</th> 
                       </tr>
                       <?php $count = 1; foreach($listings as $listing): //print_r($listing); exit;  ?>
                         <hr>
                         <tr id="row_<?=$listing->ID;?>">
-                        <td><?=$count;?></td><td><?=$listing->CRNO;?></td><td width="80"><?=date('d/m/Y',strtotime($listing->dod));?></td><td><?=$listing->nod;?></td><td><?=$listing->bedname;?></td><td><?=$listing->PName;?></td><td><?=$listing->Sex;?></td><td><?=$listing->Age;?></td><td><?=$listing->Address;?></td><td><?=$listing->Diagnosis;?></td><td><?=$listing->Department;?></td><td><?=$listing->DoctorName;?></td>
+                        <td width="20"><?=$count;?></td><td width="50"><?=$listing->CRNO;?></td><td width="40"><?=$listing->ipdno;?></td><td><?=date('d/m/Y',strtotime($listing->dod));?></td><td width="40"><?=$listing->nod;?></td><td width="100"><?=$listing->bedname;?></td><td width="140"><?=$listing->PName;?></td><td width="40"><?=$listing->Sex;?></td><td width="40"><?=$listing->Age;?></td><td width="100"><?=$listing->Address;?></td><td><?=$listing->Diagnosis;?></td><td width="100"><?=$listing->Department;?></td><td width="100"><?=$listing->DoctorName;?></td>
                         </tr>
-                        <?php if(($count % 16) == 0){?> 
-</table>||<table class="table" style="font-size:9px!important;text-align:center;" cellspacing="2" cellpadding="2">
+                        <?php if(($count % REPORT_MAX_ROWS ) == 0){?> 
+</table>||<table class="table" style="font-size:8px!important;text-align:left;" cellspacing="2" cellpadding="2">
 <?php } ?>        
                       <?php $count++; endforeach; ?>
                       <hr>

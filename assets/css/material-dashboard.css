@@ -3,7 +3,6 @@
  =========================================================
  * Material Dashboard - v2.1.0
  =========================================================
-
  * Product Page: https://www.creative-tim.com/product/material-dashboard
  * Copyright 2018 Creative Tim (http://www.creative-tim.com)
 
@@ -11260,15 +11259,6 @@ h2.title {
   .table .checkbox .icons {
     position: relative; }
 
-.table > thead > tr > th,
-.table > tbody > tr > th,
-.table > tfoot > tr > th,
-.table > thead > tr > td,
-.table > tbody > tr > td,
-.table > tfoot > tr > td {
-  padding: 12px 8px;
-  vertical-align: middle; }
-
 .table thead tr th {
   font-size: 1.063rem; }
 
@@ -11352,8 +11342,7 @@ thead.thead-inverse th,
 .table-inverse thead th {
   border-color: rgba(255, 255, 255, 0.06); }
 
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #f9f9f9; }
+
 
 .table.table-hover tbody tr:hover {
   background-color: #f5f5f5; }
@@ -13022,3 +13011,23 @@ Copyright (c) 2015 Daniel Eden
     display: none !important; } }
 
 /*# sourceMappingURL=material-dashboard.css.map */
+
+
+
+/*Changes*/
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  padding: 1px 3px;
+  text-align: left;
+  border: 1px solid rgb(142, 155, 155);
+  vertical-align: middle; 
+}
+
+/* tr:nth-child(even) {
+  border: 1px solid rgb(124, 180, 180) !important;
+   background-color: #f2f2f2; 
+} */

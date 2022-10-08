@@ -1,11 +1,50 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
+		   <div id="load_view" class="col-md-12"></div>
+
+            <div class="clearfix"></div>
             <div class="col-md-12 pull-right">
 
-            <button type="button" class="btn btn-primary pull-right add_item">Add</button>
-</div>
-             <div id="load_view" class="col-md-12"></div>
+            <div class="col-md-12 pull-right">
+ <form action="<?=base_url('/master/index/tbl_cert_death');?>" method="post" id="serch_data">
+                  <input type="hidden" name="tbl" value="<?=$tbl;?>">
+              <div class="col-md-3 col-sm-12 pull-left">
+                <span class="serchLabel">From</span><br>
+                    <div class="input-append">
+                    <input size="16" type="text" value="<?=($startDate) ? $startDate : date('d/m/Y');?>" id="startDate" name="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
+                    <span class="add-on"><i class="icon-remove"></i></span>
+                    <span class="add-on"><i class="icon-th"></i></span>
+                    </div>
+                  </div>
+
+       <div class="col-md-3 col-sm-12 pull-left">
+                  <span class="serchLabel">To</span><br>
+                    <div class="input-append">
+        <input size="16" type="text" value="<?=($endDate) ? $endDate : date('d/m/Y');?>" id="endDate" name="endDate" class="form-control" data-toggle="datepicker" placeholder="End Date" autocomplete="off">
+        <span class="add-on"><i class="icon-remove"></i></span>
+        <span class="add-on"><i class="icon-th"></i></span>
+        </div>
+      </div>
+     
+       <div class="col-md-3 col-sm-12 pull-left">
+                   <button type="button" class="btn btn-primary pull-right add_item">Add</button>
+
+       <button type="submit" class="btn btn-primary pull-right middleBtnRgt" style="padding-left:18px; padding-right:18px;">Search <i class="fa fa-search srchIcn" aria-hidden="true"></i></button>
+      </div>
+
+
+      <script type="text/javascript" src="<?=base_url('/assets/js/datepicker.min.js');?>" charset="UTF-8"></script>
+<script type="text/javascript">
+          $('[data-toggle="datepicker"]').datepicker({
+            autoHide:true,
+			format: 'dd/mm/yyyy'
+          });
+
+            
+    </script> 
+                     </form>
+	</div>
 
             <div class="clearfix"></div>
             
@@ -16,10 +55,10 @@
                   <p class="card-category">Death Certificates</p>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
+                <div class="table-responsive"  style="max-height: 500px; width: 100%;overflow: auto;">
                     <?php if($listings) :?>
-                    <table class="table">
-                      <thead class=" text-primary">
+                      <table class="table" class="table table-bordered table-striped" style="font-size: 12px;padding:0px;margin:0px;">
+                      <thead  style="text-align:right; white-space:nowrap;width:99%;">
                         <th width="20">
                           ID
                         </th>
@@ -34,7 +73,7 @@
                         <th> Doctor</th> 
                         <th> Action</th>                     
                       </thead>
-                      <tbody>
+                      <tbody style="text-align:center; white-space:nowrap;width:99%;">
                       <?php $count = 1; foreach($listings as $listing): //print_r($listing); exit;?>
 
                         <tr id="row_<?=$listing->ID;?>">

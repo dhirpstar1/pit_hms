@@ -23,13 +23,13 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">OPD Date</label>
-                          <input type="text" class="form-control exclude" data-toggle="datepicker" name="opddate" value="<?=($data->opddate) ? date('m/d/Y', strtotime($data->opddate)) : date('m/d/Y');?>" required="required">
+                          <input type="text" class="form-control" id="opddate" data-toggle="datepicker" name="opddate" value="<?=($data->opddate) ? date('m/d/Y', strtotime($data->opddate)) : date('m/d/Y');?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">CR NO.</label>
-                          <input type="text" class="form-control fetch_data exclude" id="CRNO" name="CRNO"  value="<?=($data->crno);?>">
+                          <input type="text" class="form-control fetch_data exclude" id="CRNO" name="CRNO"  value="<?=($data->crno);?>" required="required">
                         </div>
                       </div>
                     </div>
@@ -37,7 +37,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Patiant Name</label>
-                          <input type="text" class="form-control" name="PName"  id="PName" value="<?=$data->PName;?>">
+                          <input type="text" class="form-control" name="PName"  id="PName" value="<?=$data->PName;?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-6">
@@ -64,6 +64,7 @@
              <div class="row">
                       <div class="col-md-6">
                         <div class="form-group">
+						
                          <?php echo form_dropdown('Sex', array('M' => 'Male', 'F' => 'Female'), $data->Sex, 'class="form-control" id="Sex"'); ?>    
                         </div>
                       </div>
@@ -124,7 +125,7 @@
                       </div>
                       <div class="col-md-4">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Others</label>
+                          <label class="bmd-label-floating">Lab Investigation</label>
                           <input type="text" class="form-control"  id="other" name="other" value="<?=$data->other;?>">
                         </div>
                       </div>
@@ -144,8 +145,8 @@
                       </div>
                       <div class="col-md-3">
                       <div class="form-group">
-                      <button type="button" class="btn btn-primary pull-left"  id="print">Print </button>
-                      <button type="submit" class="btn btn-primary pull-right">Save </button>
+                      <button type="button" class="btn btn-primary pull-left"  id="print">Print <i class="fa fa-print prntIcn" aria-hidden="true"></i></button>
+                      <button type="submit" id="save_button" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                         </div>
                       </div>
                     </div>
@@ -168,6 +169,8 @@ $('<form action="'+url+'" target="_blank" method="POST"></form>').appendTo('body
 
 
   $("#save_form_data").submit(function(event){ 
+  //$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
     event.preventDefault(); //prevent default action
     var post_url = $(this).attr("action"); //get form action url
     var request_method = $(this).attr("method"); //get form GET/POST method
@@ -177,8 +180,10 @@ $('<form action="'+url+'" target="_blank" method="POST"></form>').appendTo('body
         type: request_method,
         data : form_data
     }).done(function(response){ //
-     // console.log(response);
+      $('#save_button').html('Save');
     });
+	
+
 });
                       </script>  
 <script>
@@ -190,18 +195,14 @@ $('<form action="'+url+'" target="_blank" method="POST"></form>').appendTo('body
 $('.fetch_data').on('focusout', function(){
   sate_form_data($(this).val());
 });   
-<?php if($postcrno){ ?>
-  window.addEventListener('load', 
-  function() { 
-    sate_form_data(<?=$postcrno;?>);
-  }, false);
-<?php } ?>
+
 
 
 function sate_form_data(set_id){
   $("#load_view").load("<?=base_url('/master/update/tbl_opd_treatment');?>"); 
   $("#load_view_list").load("<?=base_url('/master/get_custom_list/tbl_opd_treatment/crno/');?>"  + set_id);
   $.get("<?=base_url('/master/get_data/tbl_opd_patient/CRNO/');?>" + set_id, function(data){
+   // console.log(data);
   if($.parseJSON(data)){
   $.each($.parseJSON(data), function (idx, val) {
       $('[id="'+idx+'"]').val(val).change();
@@ -211,6 +212,12 @@ function sate_form_data(set_id){
 }
   }); 
 }
+<?php if($postcrno){ ?>
+  window.addEventListener('load', 
+  function() { 
+    sate_form_data(<?=$postcrno;?>);
+  }, false);
+<?php } ?>
 </script>
 
 

@@ -9,7 +9,8 @@
                     <input type="hidden" id="id_opd_trt" name="ID" value="<?=$data->ID;?>">
                     <input type="hidden" name="crno" id="CRNO" value="<?=$data->crno;?>">
                     <input type="hidden" name="tbl" value="tbl_opd_treatment">
-                    <input type="hidden" name="ddate" value="<?=date('Y-m-d h:i');?>">            
+                    <input type="hidden" name="ddate" value="<?=date('d/m/Y');?>">
+					<input type="hidden" name="Series" value="<?=get_year_code();?>">					
                     <div class="row">
                       <div class="col-md-4">
                       <div class="form-group">
@@ -36,13 +37,15 @@
                         </div>
                       </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary pull-right">Save </button>
+                        <button type="submit" id="save_button_2" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     </div>
                     <div class="clearfix"></div>
                       </form>
                       <script type="text/javascript">
                       
   $("#save_data").submit(function(event){
+	   $('#save_button').attr('disabled','disabled');
+$('#save_button_2').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
     event.preventDefault(); //prevent default action
     var post_url = $(this).attr("action"); //get form action url
     var request_method = $(this).attr("method"); //get form GET/POST method
@@ -58,6 +61,7 @@
       $('#remark').val('');
       $('#medicine').val('');
       $("#load_view_list").load("<?=base_url('/master/get_custom_list/tbl_opd_treatment/crno/');?>" + response);
+	  $('#save_button_2').html('Save');
     });
 });
                       </script>         
@@ -87,7 +91,7 @@
 
                         <tr id="row_<?=$listing->ID;?>">
                           <td>
-                            <?=$count;//$listing->ID;?>
+                            <?=$count;?>
                           </td>
                           <td>
                           <?=$listing->crno;?>
@@ -133,7 +137,7 @@
         </div>
 
           <script type="text/javascript">
-    $('.edit_item').click(function(){ 
+    $('.edit_item').click(function(){
        $("#load_view").load("<?=base_url('/master/update/tbl_opd_treatment/');?>" + $(this).attr('id')); 
     });
    $('.delete_item').click(function(){ 

@@ -15,7 +15,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">IPD Date</label>
-                          <input type="text" class="form-control exclude" name="doa" data-toggle="datepicker" value="<?=($data->doa) ? date('m/d/Y', strtotime($data->doa)) : date('m/d/Y');?>" required="required">
+                          <input type="text" class="form-control exclude" name="doa" data-toggle="datepicker" value="<?=($data->doa) ? date('d/m/Y', strtotime($data->doa)) : date('d/m/Y');?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-3">
@@ -93,7 +93,7 @@
                       </div>
                     </div>
                                        
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" id="save_button" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
@@ -101,8 +101,15 @@
 </div>
       <script type="text/javascript" src="<?=base_url('/assets/js/datepicker.min.js');?>" charset="UTF-8"></script>
 <script type="text/javascript">
+$( "#save_data" ).submit(function(event) {
+$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+  $( this ).submit();
+});
+
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });
 
             

@@ -1,24 +1,22 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
-             <div class="col-md-12 pull-right">
+             <div class="col-md-12 pull-right topCommnSpc">
 
-            <button type="button" class="btn btn-primary pull-right add_item">Add</button>
+            <button type="button" class="btn btn-primary pull-right add_item" style="visibility:hidden;">Add</button>
 </div>
             <div id="load_view" class="col-md-12"></div>
  <div class="col-md-12">
-              <div class="card">
-
-
+              <div class="card" style="margin-top:25px !important;">
                 <div class="card-header card-header-primary">
                   <h4 class="card-title ">Therapy</h4>
                   <p class="card-category"> Therapy Master</p>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
+                <div class="table-responsive"  style="max-height: 500px; width: 100%;overflow: auto;">
                     <?php if($listings) :?>
-                    <table class="table">
-                      <thead class=" text-primary">
+                      <table class="table" class="table table-bordered table-striped" style="font-size: 12px;padding:0px;margin:0px;">
+                      <thead  style="text-align:right; white-space:nowrap;width:99%;">
                         <th width="20">
                           ID
                         </th>
@@ -35,7 +33,7 @@
                           Action
                         </th>
                       </thead>
-                      <tbody>
+                      <tbody style="text-align:center; white-space:nowrap;width:99%;">
                       <?php $count = 1; foreach($listings as $listing): ?>
 
                         <tr id="row_<?=$listing->ID;?>">

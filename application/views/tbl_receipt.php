@@ -16,7 +16,7 @@
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Receipt Date</label>
-                          <input type="text" class="form-control" data-toggle="datepicker" name="ddate" value="<?=($data->ddate) ? date('m/d/Y', strtotime($data->ddate)) : date('m/d/Y');?>" required="required">
+                          <input type="text" class="form-control" data-toggle="datepicker" name="ddate" value="<?=($data->ddate) ? date('d/m/Y', strtotime($data->ddate)) : date('d/m/Y');?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-4">
@@ -29,7 +29,7 @@
                         <div class="form-group">
                           <label class="bmd-label-floating">CR No.</label>
                           <?=get_year_code();?>
-                          <input type="text" class="form-control fetch_data exclude" id="CRNO" name="recno"  value="<?=($data->recno);?>">
+                          <input type="text" class="form-control fetch_data exclude" id="CRNO" name="CRNO"  value="<?=($data->CRNO);?>">
                         </div>
                       </div>
                     </div>
@@ -114,7 +114,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Valid Upto</label>
-                          <input type="text" class="form-control" data-toggle="datepicker" name="validupto" value="<?=($data->validupto) ? date('m/d/Y', strtotime($data->validupto)) : date('m/d/Y');?>">
+                          <input type="text" class="form-control" data-toggle="datepicker" name="validupto" value="<?=($data->validupto) ? date('d/m/Y', strtotime($data->validupto)) : date('d/m/Y');?>">
                         </div>
                       </div>
                        <div class="col-md-6">
@@ -125,19 +125,25 @@
                       </div>
                     </div>
                                        
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" id="save_button" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
 </div>
 </div>
 <script>
+$( "#save_data" ).submit(function(event) {
+$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+  $( this ).submit();
+});
  $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           }); 
 $('.fetch_data').on('focusout', function(){
 
-//alert($(this).val());
+
 
 $.get("<?=base_url('/master/get_data/tbl_opd_patient/CRNO/');?>" + $(this).val(), function(data){
   console.log($.parseJSON(data));

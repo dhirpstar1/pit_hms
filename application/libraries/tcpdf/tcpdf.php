@@ -119,7 +119,7 @@ require_once(dirname(__FILE__).'/include/tcpdf_colors.php');
 require_once(dirname(__FILE__).'/include/tcpdf_images.php');
 // TCPDF static methods and data
 require_once(dirname(__FILE__).'/include/tcpdf_static.php');
-define ('K_PATH_IMAGES', '');
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 /**

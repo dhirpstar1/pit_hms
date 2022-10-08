@@ -1,9 +1,9 @@
  
    <div align="center" style:color:#000000;>
-    <h6>Centeral Registration IPD Patient Report</h6>
-  <h6>Date: From - <?=($this->input->post('startDate')) ? $this->input->post('startDate') : date('d/m/Y');?> To  <?=($this->input->post('endDate')) ? $this->input->post('endDate') : date('d/m/Y');?></h6>
+   <h5>  <?php if($selected_department): ?> Departmental (<?php echo ucfirst(strtolower($selected_department)); ?>) IPD Register<?php else: ?>Central IPD Register <?php endif; ?></h5>
+    <h6>Date: From - <?=($this->input->post('startDate')) ? $this->input->post('startDate') : date('d/m/Y');?> To  <?=($this->input->post('endDate')) ? $this->input->post('endDate') : date('d/m/Y');?></h6>
   </div>
-  <div>
+  <div  align="left">
 <?php //echo '<pre>';
     //print_r($departments); exit;
 if($listings) :   
@@ -12,21 +12,26 @@ if($listings) :
         $male = 0;
         $female = 0;
         $total = 0;
+        $codunt = 1;
+        $rows = REPORT_MAX_ROWS;
     ?>
-                    <table class="table" style="font-size:9px!important;text-align:center;" cellspacing="2" cellpadding="2">
-                      <tr class=" text-primary">
-                        <th>Date</th>
-                        <th> CR No.</th>
-                        <th> OLD No.</th>
-                        <th> Patient Name</th>
-                        <th> M/F</th>
-                        <th> Age</th>
-                        <th> Address</th>
-                        <th> Complaint</th>
-                        <th> Department</th>
-                        <th> Doctor</th> 
+          <table class="table" style="font-size:9px!important;text-align:left;" cellspacing="2" cellpadding="2">
+                      <hr><tr ><b>
+					<th width="30">Sr. No</th>
+					<th width="60">CR No.</th>
+					<th width="60">DOA</th>
+					<th width="60">DOD</th>
+					<th width="60">IPD No.</th>
+					<th width="100">Patient Name</th>
+					<th width="30">M/F</th>
+					<th width="30">Age</th>
+					<th width="100">Address</th>
+					<th width="100">Bed No.</th>
+					<th width="100">Diagnosis</th>
+					<th width="100">Department</th>
+                    <th>Doctor</th> </b>
                       </tr>
-                      <?php $count = 1; foreach($listings as $listing): //print_r($listing); exit; 
+                      <?php $countnum = 1; $count = 1; foreach($listings as $listing): //print_r($listing); exit; 
                       if($listing->OldCRNO > 0){$old++;}
                       if($listing->OldCRNO ==''){$new++;}
                       if($listing->Sex == 'M'){$male++;}
@@ -36,41 +41,40 @@ if($listings) :
                       ?>
 <hr>
                         <tr id="row_<?=$listing->ID;?>">
-                        <td><?=date('d/m/Y',strtotime($listing->opddate));?></td><td><?=$listing->CRNO;?></td><td><?=$listing->OldCRNO;?></td><td><?=$listing->PName;?></td><td><?=$listing->Sex;?></td><td><?=$listing->Age;?></td><td><?=$listing->Address;?></td><td><?=$listing->Income;?></td><td><?=$listing->Department;?></td><td><?=$listing->DoctorName;?></td>
+                        <td width="30"><?=$countnum;?></td><td width="60"><?=$listing->CRNO;?></td><td width="60"><?=date('d/m/Y',strtotime($listing->opddate));?></td><td width="60"><?=$listing->dod;?></td><td width="60"><?=$listing->ipdno;?></td><td width="100"><?=$listing->PName;?></td><td width="30"><?=$listing->Sex;?></td><td width="30"><?=$listing->Age;?></td><td width="100"><?=$listing->Address;?></td><td width="100"><?=$listing->bedname;?></td><td width="100"><?=$listing->Diagnosis;?></td><td width="100"><?=$listing->department;?></td><td><?=$listing->doctorname;?></td>
                         </tr>
-                        <?php if(($count % 16) == 0){?> 
-</table> ||
-<<table class="table" style="font-size:9px!important;text-align:center;" cellspacing="2" cellpadding="2">
+                        <?php if($count === $rows){ $rows = REPORT_MAX_ROWS; $count = 0;?> 
+</table>||<table class="table" style="font-size:9px!important;text-align:left;" cellspacing="2" cellpadding="2">
 <?php } ?>
-                      <?php $count++; endforeach; ?>
+                      <?php $countnum++; endforeach; ?>
                     </table><hr>
-                    <table class="table" style="font-size:9px!important;text-align:center;" cellspacing="2" cellpadding="2">
+                    <table class="table" style="font-size:9px!important;text-align:left;" cellspacing="2" cellpadding="2">
                                         <hr>
                       <tr class=" text-primary">
-                        <th>New</th>
-                        <th><?=$new;?> </th>
-                        <th> OLD </th>
-                        <th><?=$old;?> </th>
-                        <th> Male</th>
-                        <th> <?=$male;?></th>
-                        <th> Female</th>
-                        <th> <?=$female;?></th>
-                        <th> Total</th>
-                        <th><?=$total;?> </th>
+                        <th><b>New</b></th>
+                        <th><b><?=$new;?></b> </th>
+                        <th><b> OLD</b> </th>
+                        <th><b><?=$old;?> </b></th>
+                        <th><b>Male</b></th>
+                        <th><b><?=$male;?></b></th>
+                        <th><b>Female</b></th>
+                        <th><b><?=$female;?></b></th>
+                        <th><b> Total</b></th>
+                        <th><b><?=$total;?></b> </th> 
                         </tr>
                         </table>
                     <?php else: ?>
                       <div class="col-md-12">No data found.</div>
                   <?php endif; ?>
-                  <table class="table" style="font-size:9px!important;text-align:center;" cellspacing="2" cellpadding="2">
+                  <table class="table" style="font-size:9px!important;text-align:left;" cellspacing="2" cellpadding="2">
                 <hr>
                  <tr class="text-primary">
                     <th>Departments</th>
-                    <th>New Male</th>
+                    <th><b>New Male</b></th>
                     <th>Old Male</th>
-                    <th>New Female</th>
+                    <th><b>New Female</b></th>
                     <th>Old Female</th>
-                    <th>Total</th>
+                    <th><b>Total</b></th>
                   </tr>
                   <?php foreach($departments as $department): 
                   $newmalecount = 0;
@@ -91,14 +95,14 @@ if($listings) :
                     ?><hr>
                   <tr>
                     <td><?=$department;?></td>
-                    <td><?=$newmalecount;?></td>
+                    <td><b><?=$newmalecount;?></b></td>
                     <td><?=$oldmalecount;?></td>
-                    <td><?=$newfemalecount;?></td>
+                    <td><b><?=$newfemalecount;?></b></td>
                     <td><?=$oldfemalecount;?></td>
-                    <td><?=$total;?></td>
+                    <td><b><?=$total;?></b></td>
                   </tr>
                       <?php endforeach; ?>
-                      <tr>
+                      <hr>
                 </table>           
 
 

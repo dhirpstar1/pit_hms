@@ -17,7 +17,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Admit Date</label>
-                          <input type="text" class="form-control exclude" readonly name="doa" id="doa" value="<?=($data->doa) ? date('m/d/Y', strtotime($data->doa)) : date('m/d/Y');?>" required="required">
+                          <input type="text" class="form-control exclude" readonly name="doa" id="doa" value="<?=($data->doa) ? date('d/m/Y', strtotime($data->doa)) : date('d/m/Y');?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-6">
@@ -84,7 +84,7 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Death Date</label>
-                          <input type="text" class="form-control" data-toggle="datepicker" name="deathdate" value="<?=($data->deathdate) ? date('m/d/Y', strtotime($data->deathdate)) : '';?>" required="required">
+                          <input type="text" class="form-control" data-toggle="datepicker" name="deathdate" value="<?=($data->deathdate) ? date('d/m/Y', strtotime($data->deathdate)) : '';?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-6">
@@ -109,15 +109,21 @@
                       </div>
                     </div>
                                        
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" id="save_button" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
 </div>
 </div>
 <script>
+$( "#save_data" ).submit(function(event) {
+$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+  $( this ).submit(); 
+});
  $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });   
 $('.fetch_data').on('focusout', function(){
 $.get("<?=base_url('/master/get_data/tbl_opd_patient/CRNO/');?>" + $(this).val(), function(data){

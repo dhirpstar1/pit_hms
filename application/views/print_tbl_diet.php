@@ -1,10 +1,12 @@
-<h1></h1>
+<div align="center" style="color:#000000;">
+<h3>Diet Report</h6>
+</div> 
 <table cellspacing="0" cellpadding="5" border="1" width="100%" style="font-size:10px!importantd;border:1px solid #000000; width:100%;border-collapse: collapse;">
    <tr>
       <td width="25%"><b>Name of Patient</b></td>
       <td width="25%"><?=$data->PName;?></td>
-      <td width="25%"><b>UIN</b></td>
-      <td width="25%"><b><?=$data->UIN;?></b></td>
+      <td width="25%"><b>CR. NO.</b> - <?=$data->CRNO;?></td>
+      <td width="25%"><b>IPD NO</b> - <?=$data->ipdno;?></td>
     </tr>
     <tr>
       <td width="25%"><b>Occupation</b></td>
@@ -47,7 +49,7 @@
     <tr><td colspan="4"><?php //print_r($data); ?></td></tr>
     
     <tr><td colspan="4" align="center"><h3>DIET PRESCRIPTION</h3></td></tr>
-    <tr><td colspan="4" height="50"><?=$data->diet_prescription;?></td></tr>
+    <tr><td colspan="4" height=""><?=$data->diet_prescription;?></td></tr>
     <tr><td colspan="4"></td></tr>
 
     <tr><td colspan="4" align="center"><h3>PRESCRIBED DIET</h3></td></tr>

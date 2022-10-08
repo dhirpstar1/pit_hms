@@ -24,10 +24,16 @@
                           <input type="text" data-toggle="datepicker" class="form-control exclude" name="sdate" value="<?=($data->sdate) ? date('m/d/Y', strtotime($data->sdate)) : date('m/d/Y');?>">
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-md-2">
                         <div class="form-group">
                           <label class="bmd-label-floating">CRNO.</label>
                           <input type="text" class="form-control fetch_data exclude" id="CRNO" name="crno"  value="<?=($data->CRNO);?>" required="required">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">IPDNO.</label>
+                          <input type="text" class="form-control fetch_data exclude" id="ipdno" readonly value="<?=($data->ipdno);?>">
                         </div>
                       </div>
                     </div>
@@ -58,31 +64,18 @@
                       </div>
                      
                     </div>
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Provisanal No</label>
-                          <input type="text" class="form-control" name="provisanal_no" value="<?=$data->provisanal_no;?>">
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">Contact No</label>
-                          <input type="text" class="form-control" name="contact_no" value="<?=$data->contact_no;?>">
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label class="bmd-label-floating">UIN No.</label>
-                          <input type="text" class="form-control"  name="UIN" value="<?=$data->UIN;?>">
-                        </div>
-                      </div>
-                    </div>
+                    
              <div class="row">
                       <div class="col-md-4">
                         <div class="form-group">
                           <label class="bmd-label-floating">Occupation</label>
                           <input type="text" class="form-control" name="occupation" value="<?=$data->occupation;?>">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">Contact No</label>
+                          <input type="text" class="form-control" name="contact_no" value="<?=$data->contact_no;?>">
                         </div>
                       </div>
                       <div class="col-md-2">
@@ -97,7 +90,7 @@
                           <input type="text" class="form-control" name="weight" value="<?=$data->weight;?>">
                         </div>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-md-2">
                         <div class="form-group">
                           <label class="bmd-label-floating">BMI</label>
                           <input type="text" class="form-control" name="BMI" value="<?=$data->BMI;?>" readonly>
@@ -167,18 +160,11 @@
                       </div>
                     </div>               
                     <button type="submit" class="btn btn-primary pull-right">Save</button>
-                    <button type="button" class="btn btn-primary pull-right"  id="print">Print </button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
 </div>
 </div>
-<script type="text/javascript">  
-            $('#print').click(function(){ 
-var url = "<?=base_url('/master/print_data/tbl_diet/');?>" + $('#CRNO').val();
-$('<form action="'+url+'" target="_blank" method="POST"></form>').appendTo('body').submit();
-});                
-</script>
 <script type="text/javascript">
           $('[data-toggle="datepicker"]').datepicker({
             autoHide:true

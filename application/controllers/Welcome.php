@@ -44,10 +44,8 @@ class Welcome extends CI_Controller {
 	{
 		$data['all_ipd_patients'] = $this->Master_model->get_all_patient_ipd('all');
 		$data['all_opd_patients'] = $this->Master_model->get_all_patient_opd('all');
-
 		$data['all_beds'] = $this->Master_model->get_all_beds();
 		$this->config_data = $data['config_data'] = $this->Master_model->get_cofig_data();
-
 		$this->load->view('header', $data);
 		$this->load->view('dashboard', $data);
 		$this->load->view('footer');

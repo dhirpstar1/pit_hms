@@ -6,7 +6,7 @@
             <div id="load_view" class="col-md-12">
                <form action="<?=base_url('/master/report/tbl_discharge_patient');?>" method="post" id="serch_data">
                   <input type="hidden" name="tbl" value="<?=$tbl;?>">
-              <div class="col-md-3 col-sm-12 pull-left">
+              <div class="col-md-2 col-sm-12 pull-left">
                     <div class="input-append">
         <input size="16" type="text" value="<?=$startDate;?>" name="startDate"  id="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
         <span class="add-on"><i class="icon-remove"></i></span>
@@ -14,24 +14,26 @@
         </div>
       </div>
 
-       <div class="col-md-3 col-sm-12 pull-left">
+       <div class="col-md-2 col-sm-12 pull-left">
                     <div class="input-append">
         <input size="16" type="text" value="<?=$endDate;?>" name="endDate" id="endDate" class="form-control" data-toggle="datepicker" placeholder="End Date" autocomplete="off">
         <span class="add-on"><i class="icon-remove"></i></span>
         <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
-      <div class="col-md-3 col-sm-12 pull-left">
+      <div class="col-md-2 col-sm-12 pull-left">
       <?php echo form_dropdown('Department', $departments, $Department, 'class="form-control" id="Department"'); ?>    
       </div>
-       <div class="col-md-3 col-sm-12 pull-left">
-       <button type="button" class="btn btn-primary pull-right"  id="print">Print </button>
-
-        <button type="submit" class="btn btn-primary pull-left">Search</button>
+       <div class="col-md-6 col-sm-12 pull-left">
+        <button type="submit" class="btn btn-primary pull-left middleBtnRgt">Search <i class="fa fa-search srchIcn" aria-hidden="true"></i></button>
+       <button type="button" class="btn btn-primary pull-left"  id="print">Print <i class="fa fa-print prntIcn" aria-hidden="true"></i></button>
+       <button type="button" class="btn btn-primary pull-right"  id="save">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
+       
       </div>
       <script type="text/javascript">
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });           
       </script> 
       <script type="text/javascript">  
@@ -41,7 +43,29 @@ var startdate = $('#startDate').val();
 var enddate = $('#endDate').val();
 var department = $('#Department').val();
 $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" name="startDate" value="'+startdate+'"><input type="hidden" name="endDate" value="'+enddate+'"><input type="hidden" name="Department" value="'+department+'"></form>').appendTo('body').submit();
-});                
+});  
+
+$('#save').click(function(){ 
+  $('#save').attr('disabled','disabled');
+$('#save').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+var url = "<?=base_url('/master/print_report/tbl_discharge_patient');?>";
+var startdate = $('#startDate').val();
+var enddate = $('#endDate').val();
+var department = $('#Department').val();
+  $('<form action="'+url+'" method="POST" id="save_file"><input type="hidden" name="startDate" value="'+startdate+'"><input type="hidden" name="endDate" value="'+enddate+'"><input type="hidden" name="Department" value="'+department+'"><input type="hidden" name="report_type" value="save"></form>').appendTo('body');
+  $.post( url, $( "#save_file" ).serialize())
+  .done(function( data ) {
+    Swal.fire({
+  title: 'Success!',
+  text: 'File save successfully.',
+  icon: 'success',
+  confirmButtonText: 'Close'
+});
+    $('#save').attr('disabled',false);
+    $('#save').html('Save <i class="fa fa-save addIcn" aria-hidden="true"></i>');  });
+
+  
+});
 </script>
                      </form>
             </div>
@@ -54,14 +78,15 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
                   <p class="card-category"> Central Regitration Discharge Patient Sheet</p>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive table-condensed">
+                  <!-- <div class="table-responsive table-condensed"> -->
+                  <div class="table-responsive"  style="max-height: 500px; width: 100%;overflow: auto;">
                     <?php if($listings) :?>
-                    <table class="table responsive-table">
-                      <thead class=" text-primary">
+                      <table class="table" class="table table-bordered table-striped" style="font-size: 12px;padding:0px;margin:0px;">
+                      <thead  style="text-align:center; white-space:nowrap;width:99%;">
                         <th width="20"> ID </th>
                         <th> CR No.</th>
                         <th> Old No.</th>
-                        <th> Date</th> 
+                        <th> Dis. Date</th> 
                         <th> Patient Name</th>
                         <th> M/F</th>
                         <th> Age</th>
@@ -77,7 +102,7 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
                         <th> Type Of Discharge</th> 
                          <th> Doctor</th>             
                       </thead>
-                      <tbody>
+                      <tbody style="text-align:center; white-space:nowrap;width:99%;">
                       <?php $count = 1; foreach($listings as $listing): //print_r($listing); exit;?>
 
                         <tr id="row_<?=$listing->ID;?>">

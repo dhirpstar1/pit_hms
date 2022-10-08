@@ -1,10 +1,9 @@
       <div class="content">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-12 pull-right">
+            
+            <button type="button" class="btn btn-primary pull-right add_item" style="visibility:hidden;">Add</button>
 
-            <button type="button" class="btn btn-primary pull-right add_item">Add</button>
-</div>
              <div id="load_view" class="col-md-12"></div>
 
             <div class="clearfix"></div>
@@ -14,33 +13,37 @@
                <form action="<?=base_url('/master/index/tbl_gynec');?>" method="post" id="serch_data">
                   <input type="hidden" name="tbl" value="<?=$tbl;?>">
               <div class="col-md-3 col-sm-12 pull-left">
+                <span class="serchLabel">From</span><br>
                     <div class="input-append">
-        <input size="16" type="text" value="<?=($startDate) ? $startDate : date('m/d/Y');?>" id="startDate" name="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
+        <input size="16" type="text" value="<?=($startDate) ? $startDate : date('d/m/Y');?>" id="startDate" name="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
         <span class="add-on"><i class="icon-remove"></i></span>
         <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
 
        <div class="col-md-3 col-sm-12 pull-left">
+        <span class="serchLabel">To</span><br>
                     <div class="input-append">
-        <input size="16" type="text" value="<?=($endDate) ? $endDate : date('m/d/Y');?>" id="endDate" name="endDate" class="form-control" data-toggle="datepicker" placeholder="End Date" autocomplete="off">
+        <input size="16" type="text" value="<?=($endDate) ? $endDate : date('d/m/Y');?>" id="endDate" name="endDate" class="form-control" data-toggle="datepicker" placeholder="End Date" autocomplete="off">
         <span class="add-on"><i class="icon-remove"></i></span>
         <span class="add-on"><i class="icon-th"></i></span>
         </div>
       </div>
       <div class="col-md-3 col-sm-12 pull-left">
+        <span class="serchLabel">Department</span><br>
       <?php echo form_dropdown('Department', $departments, $Department, 'class="form-control" id="Department"'); ?>    
       </div>
        <div class="col-md-3 col-sm-12 pull-left">
-       <button type="button" class="btn btn-primary pull-right" id="print">Print </button>
-
-                    <button type="submit" class="btn btn-primary pull-right">Search</button>
+	  
+       <button type="button" class="btn btn-primary pull-right commnBtnSpc" id="print">Print <i class="fa fa-print prntIcn" aria-hidden="true"></i></button>
+       <button type="submit" class="btn btn-primary pull-right commnBtnSpc middleBtnRgt">Search <i class="fa fa-search srchIcn" aria-hidden="true"></i></button>
                     
       </div>
       <script type="text/javascript" src="<?=base_url('/assets/js/datepicker.min.js');?>" charset="UTF-8"></script>
 <script type="text/javascript">
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });
 
             
@@ -84,14 +87,15 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
 
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
+                <div class="table-responsive"  style="max-height: 500px; width: 100%;overflow: auto;">
                     <?php if($listings) :?>
-                    <table class="table">
-                      <thead class=" text-primary">
+                      <table class="table" class="table table-bordered table-striped" style="font-size: 12px;padding:0px;margin:0px;">
+                      <thead  style="text-align:right; white-space:nowrap;width:99%;">
                         <th width="20">
                           ID
                         </th>
                         <th> CR No.</th>
+                        <th> IPD No.</th>
                         <th> Date</th> 
                         <th> Patient Name</th>
                         <th> M/F</th>
@@ -101,7 +105,7 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
                         <th> Local Procedure</th> 
                         <th>Action</th>                     
                       </thead>
-                      <tbody>
+                      <tbody style="text-align:center; white-space:nowrap;width:99%;">
                       <?php $count = 1; foreach($listings as $listing): //print_r($listing); exit;?>
 
                         <tr id="row_<?=$listing->ID;?>">
@@ -111,9 +115,11 @@ $('<form action="'+url+'" target="_blank" method="POST"><input type="hidden" nam
                           <td>
                           <?=$listing->Crno;?>
                           </td>
-                          
                           <td>
-                          <?=date('d/m/Y', strtotime($listing->doa));?>
+                          <?=$listing->ipdno;?>
+                          </td>
+                          <td>
+                          <?=date('d/m/Y', strtotime($listing->gdate));?>
                           </td>
                            <td>
                           <?=$listing->pname;?>

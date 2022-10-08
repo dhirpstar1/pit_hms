@@ -2,7 +2,7 @@
               <div class="card">
                 <div class="col-md-12">
                        <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Karama</h4>
+                  <h4 class="card-title ">Karma</h4>
                   <p class="card-category"> Add / Edit </p>
                 </div>
                 <br>
@@ -23,7 +23,7 @@
                       </div>
                      </div>
                                        
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" class="btn btn-primary pull-right">Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           

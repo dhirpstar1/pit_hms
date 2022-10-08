@@ -72,13 +72,48 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $active_group = 'default';
 $query_builder = TRUE;
+//echo $_SERVER['HTTP_HOST']; exit;
+
+//  switch($_SERVER['HTTP_HOST']){
+	
+// 		 case 'igpac.pitgondia.com':
+// 		 $username = 'u179056811_igpac_hms';
+// 		 $password = 'q0[H#KWy[[';
+// 		 $database = 'u179056811_igpac_hms';
+// 		 break;
+		
+// 		 case 'hms.pitgondia.com':
+// 		 $username = 'u179056811_pitgondia_hms';
+// 		 $password = 'oS!m7tzM+3';
+// 		 $database = 'u179056811_pitgondia_hms';
+// 		 break;
+		 
+// 		 case 'lahotiayur.pitgondia.com':
+// 		 $username = 'u179056811_lahotiayur_hms';
+// 		 $password = '@3tVvb=dzfB~';
+// 		 $database = 'u179056811_lahotiayur_hms';
+// 		 break;
+
+// 		 default:
+// 		 $username = 'pitgondia_hms';
+// 		 $password = 'ggfdi31';
+// 		 $database = 'pitgondia_hms';
+// 		 break;
+//  }
+
+
+
+
 
 $db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
-	'database' => 'hms',
+// 	'username' => $username,
+	'username' => 'u179056811_pitgondia_hms',
+// 	'password' => $password,
+	'password' =>'oS!m7tzM+3' ,
+// 	'database' => $username,
+	'database' => 'u179056811_pitgondia_hms',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -94,3 +129,4 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+

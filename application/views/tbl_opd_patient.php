@@ -15,12 +15,12 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">OPD Date</label>
-                          <input type="text" class="form-control exclude" data-toggle="datepicker" name="opddate" value="<?=($data->opddate) ? date('m/d/Y', strtotime($data->opddate)) : '';?>" required="required">
+                          <input type="text" class="form-control exclude" data-toggle="datepicker" name="opddate" value="<?=($data->opddate) ? date('d/m/Y', strtotime($data->opddate)) : date('d/m/Y');?>" required="required">
                         </div>
                       </div>
                       <div class="col-md-3">
                         <div class="form-group">
-                          <label class="bmd-label-floating">CR No. OPD NO.</label>
+                          <label class="bmd-label-floating">CRNO. OPD NO.</label>
                          <strong> <?=get_year_code();?> </strong><input type="text" class="form-control exclude" name="CRNO"  value="<?=($data->CRNO) ? $data->CRNO : $next_cr_no;?>" readonly>
                         </div>
                       </div>
@@ -63,7 +63,7 @@
                       </div>
                       <div class="col-md-6">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Complain</label>
+                          <label class="bmd-label-floating">Complaint</label>
                           <input type="text" class="form-control" name="Income" value="<?=$data->Income;?>" required="required">
                         </div>
                       </div>
@@ -73,18 +73,18 @@
                       <div class="col-md-6">
                         <div class="form-group">
                           <label class="bmd-label-floating">Department</label>
-                         <?php echo form_dropdown('Department', $departments, $data->Department, 'class="form-control"'); ?>    
+                         <?php echo form_dropdown('Department', $departments, $data->Department, 'class="form-control" id="Department"'); ?>    
                         </div>
                       </div>
                        <div class="col-md-6">
                         <div class="form-group">
-                          <label class="bmd-label-floating">Testing Doctor</label>
-                         <?php echo form_dropdown('DoctorName', $doctors, $data->DoctorName, 'class="form-control"'); ?>    
+                          <label class="bmd-label-floating">Treating Doctor</label>
+                         <?php echo form_dropdown('DoctorName', $doctors, $data->DoctorName, 'class="form-control" id="DoctorName"'); ?>    
                         </div>
                       </div>
                     </div>
                                        
-                    <button type="submit" class="btn btn-primary pull-right">Save</button>
+                    <button type="submit" class="btn btn-primary pull-right" id="save_button" >Save <i class="fa fa-save addIcn" aria-hidden="true"></i></button>
                     <div class="clearfix"></div>
                      </form>
  </div>           
@@ -92,13 +92,33 @@
 </div>
       <script type="text/javascript" src="<?=base_url('/assets/js/datepicker.min.js');?>" charset="UTF-8"></script>
 <script type="text/javascript">
+$( "#save_data" ).submit(function(event) {
+$('#save_button').attr('disabled','disabled');
+$('#save_button').html('<i class="fa fa-spinner fa-spin"></i> Data Saving....');
+  $( this ).submit();
+});
+
+
+
           $('[data-toggle="datepicker"]').datepicker({
-            autoHide:true
+            autoHide:true,
+			format: 'dd/mm/yyyy'
           });
 
             
-    </script> 
-<script>
+  $('#Department').on('change', function(){
+$.get("<?=base_url('/master/get_doctors/');?>" + $(this).val(), function(data){
+	let dropdown = $('#DoctorName');
+
+dropdown.empty();
+
+dropdown.append('<option selected="true" disabled>Choose Doctor</option>');
+dropdown.prop('selectedIndex', 0);
+	$.each($.parseJSON(data), function (key, entry) {
+    dropdown.append($('<option></option>').attr('value', entry).text(entry));
+  })
+ }); 
+});
 $('.fetch_data').on('focusout', function(){
 $.get("<?=base_url('/master/get_data/tbl_opd_patient/CRNO/');?>" + $(this).val(), function(data){
   //console.log($.parseJSON(data));
