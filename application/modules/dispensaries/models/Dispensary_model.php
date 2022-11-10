@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @property Bcrypt $bcrypt The Bcrypt library
  * @property Ion_auth $ion_auth The Ion_auth library
  */
-class Master_model extends CI_Model
+class Dispensary_model extends CI_Model
 {
 	
 	/**
@@ -139,240 +139,59 @@ return $this->db->get()->result();
 
 
 	 function get_list($table, $type = FALSE, $startDate, $endDate, $limit, $page=0)
-				{
-			if($this->input->post('startDate') && $this->input->post('endDate')){
-				$sdate = DateTime::createFromFormat('d/m/Y', $this->input->post('startDate'));
-				$edate = DateTime::createFromFormat('d/m/Y', $this->input->post('endDate'));
-				
-				$startDate 	= $sdate->format('m/d/Y');
-				$endDate 	= $edate->format('m/d/Y');
-				
-				
-				}else{
-				$startDate	= date('m/d/y');
-				$endDate	= date('m/d/y');
-				}
-		
-			if($table === 'tbl_ipd_patient')
-			{
-				
-			$this->db->select("tbl_opd_patient.*, tbl_ipd_patient.*, tbl_opd_patient.Department as department, tbl_bedmaster.Description as bedname,  DATE_FORMAT(tbl_discharge_patient.dod, '%d/%m/%Y') AS dod");
-			$this->db->select(" GROUP_CONCAT(tbl_ipd_treatment.medicine ORDER BY tbl_ipd_treatment.ID ASC SEPARATOR '<br>') as treatment");
-			$this->db->from($table);
-			$this->db->join('tbl_opd_patient', 'tbl_ipd_patient.crno = tbl_opd_patient.CRNO AND tbl_ipd_patient.Series = tbl_opd_patient.Series', 'left');
-			$this->db->join('tbl_bedmaster', 'tbl_ipd_patient.bedid = tbl_bedmaster.ID', 'left');
-			$this->db->join('tbl_discharge_patient', 'tbl_ipd_patient.crno = tbl_discharge_patient.crno AND tbl_ipd_patient.Series = tbl_discharge_patient.Series', 'left');
+		{
 			
-			$this->db->join('tbl_ipd_treatment', 'tbl_ipd_treatment.crno = tbl_opd_patient.CRNO ', 'left');
-
-			if($this->input->post('startDate') && $this->input->post('endDate')){
-				$this->db->where("DATE_FORMAT(tbl_ipd_patient.doa,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-				$this->db->where("DATE_FORMAT(tbl_ipd_patient.doa,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-			}else{
-				if('print_report' === $this->router->fetch_method() || 'report' === $this->router->fetch_method()){ 
-				$this->db->where("DATE_FORMAT(tbl_ipd_patient.doa,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-				$this->db->where("DATE_FORMAT(tbl_ipd_patient.doa,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
+			if ($table !== 'tbl_medicine_master_stock'){
+				if($this->input->post('startDate') && $this->input->post('endDate')){
+					$sdate = DateTime::createFromFormat('d/m/Y', $this->input->post('startDate'));
+					$edate = DateTime::createFromFormat('d/m/Y', $this->input->post('endDate'));
+					$startDate 	= $sdate->format('m/d/Y');
+					$endDate 	= $edate->format('m/d/Y');
+				} else {
+					$startDate	= date('m/d/y');
+					$endDate	= date('m/d/y');
 				}
 			}
-
-			//echo $this->router->fetch_method(); exit;
-			if('print_report' === $this->router->fetch_method() || 'report' === $this->router->fetch_method()){ 
-					//$this->db->where("tbl_ipd_patient.isadmit", 1); 
-				}else{
-					$this->db->where("tbl_ipd_patient.isadmit", 1); 
-					//$this->db->where("tbl_ipd_patient.isadmit", 0); 
-				}
-		}elseif($table === 'tbl_discharge_patient')
-		{
-		$this->db->select("tbl_opd_patient.*, tbl_discharge_patient.*, tbl_ipd_patient.bedid, tbl_ipd_patient.ipdno, tbl_bedmaster.Description as bedname");
-		$this->db->from($table);
-		$this->db->join('tbl_opd_patient', 'tbl_opd_patient.CRNO = tbl_discharge_patient.crno AND tbl_opd_patient.Series = tbl_discharge_patient.Series', 'left');
-		$this->db->join('tbl_ipd_patient', 'tbl_ipd_patient.crno = tbl_discharge_patient.crno AND tbl_ipd_patient.Series = tbl_discharge_patient.Series', 'left');
-		$this->db->join('tbl_bedmaster', 'tbl_ipd_patient.bedid = tbl_bedmaster.ID', 'inner');
-	
-			$this->db->where("DATE_FORMAT(tbl_discharge_patient.dod,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-			$this->db->where("DATE_FORMAT(tbl_discharge_patient.dod,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-			
-			
-	}elseif($table === 'tbl_diet')
-	{
-	$this->db->select("tbl_opd_patient.*, tbl_diet.*");
-	$this->db->from($table);
-	$this->db->join('tbl_opd_patient', 'tbl_opd_patient.CRNO = tbl_diet.CRNO AND tbl_opd_patient.Series = tbl_diet.Series', 'inner');
-
-		$this->db->where("DATE_FORMAT(tbl_diet.sdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-		$this->db->where("DATE_FORMAT(tbl_diet.sdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-		
-		
-}elseif($table === 'tbl_anc_register')
-{
-$this->db->select("tbl_opd_patient.*, tbl_anc_register.*, tbl_ipd_patient.ipdno");
-$this->db->from($table);
-$this->db->join('tbl_opd_patient', 'tbl_opd_patient.CRNO = tbl_anc_register.CRNO AND tbl_opd_patient.Series = tbl_anc_register.Series', 'inner');
-$this->db->join('tbl_ipd_patient', 'tbl_ipd_patient.crno = tbl_anc_register.CRNO AND tbl_ipd_patient.Series = tbl_anc_register.Series', 'left');
-
-	$this->db->where("DATE_FORMAT(tbl_anc_register.ddate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-	$this->db->where("DATE_FORMAT(tbl_anc_register.ddate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-	
-	
-}elseif($table === 'tbl_x_ray')
-{
-$this->db->select("tbl_opd_patient.*, tbl_x_ray.*, DATE_FORMAT(tbl_x_ray.xdate, '%m/%d/%Y') AS xdate");
-$this->db->from($table);
-$this->db->join('tbl_opd_patient', 'tbl_opd_patient.CRNO = tbl_x_ray.CRNO AND tbl_opd_patient.Series = tbl_x_ray.Series', 'left');
-
-	$this->db->where("DATE_FORMAT(tbl_x_ray.xdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-	$this->db->where("DATE_FORMAT(tbl_x_ray.xdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-	
-	
-}elseif($table === 'tbl_surgery')
-{
-$this->db->select("tbl_opd_patient.*, tbl_surgery.*");
-$this->db->from($table);
-$this->db->join('tbl_opd_patient', 'tbl_opd_patient.CRNO = tbl_surgery.CRNO AND tbl_opd_patient.Series = tbl_surgery.Series', 'left');
-
-	$this->db->where("DATE_FORMAT(tbl_surgery.sdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-	$this->db->where("DATE_FORMAT(tbl_surgery.sdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-	
-	
-}elseif($table === 'tbl_karama'){
-	$this->db->select("tbl_karama.*, tbl_karama_parent.name as parent");
-	$this->db->from($table);
-	$this->db->join('tbl_karama as tbl_karama_parent', 'tbl_karama.parent_id = tbl_karama_parent.id', 'left');
-}elseif($table === 'tbl_therapy'){
-	$this->db->select("tbl_therapy.*, tbl_therapy_parent.name as parent");
-	$this->db->from($table);
-	$this->db->join('tbl_therapy as tbl_therapy_parent', 'tbl_therapy.parent_id = tbl_therapy_parent.id', 'left');
-}elseif($table === 'tbl_gynec'){
-			
-			$this->db->select("tbl_gynec.*, tbl_opd_patient.Age, GROUP_CONCAT(DISTINCT CONCAT(tbl_gynec_procedure.procedure_title,' - ',tbl_gynec_procedure.procedure_value) 
-			ORDER BY tbl_gynec_procedure.procedure_id desc
-			SEPARATOR ' <br> ') as LocalProcedure, tbl_ipd_patient.ipdno");
-			$this->db->from($table);
-			$this->db->join('tbl_opd_patient', 'tbl_gynec.Crno = tbl_opd_patient.CRNO AND tbl_gynec.series = tbl_opd_patient.Series', 'inner');
-			$this->db->join('tbl_ipd_patient', 'tbl_gynec.Crno = tbl_ipd_patient.crno AND tbl_gynec.series = tbl_ipd_patient.Series', 'left');
-			$this->db->join('tbl_gynec_procedure', 'tbl_gynec.ID = tbl_gynec_procedure.gynec_id', 'left');
-			
-			$this->db->where("DATE_FORMAT(tbl_gynec.gdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-			$this->db->where("DATE_FORMAT(tbl_gynec.gdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-
-		}elseif($table === 'tbl_panchkarma'){
-			$this->db->select("tbl_panchkarma.*,  GROUP_CONCAT(DISTINCT CONCAT(tbl_pankarama_karama.karama_title,' - ',tbl_pankarama_karama.karama_value) 
-			ORDER BY tbl_pankarama_karama.panchkarama_id desc
-			SEPARATOR ' <br> ') as karamas_data, tbl_ipd_patient.ipdno");
-			$this->db->from($table);
-			$this->db->join('tbl_opd_patient', 'tbl_panchkarma.Crno = tbl_opd_patient.CRNO AND tbl_panchkarma.series = tbl_opd_patient.Series', 'inner');
-			$this->db->join('tbl_ipd_patient', 'tbl_panchkarma.Crno = tbl_ipd_patient.crno AND tbl_panchkarma.series = tbl_ipd_patient.Series', 'left');
-			$this->db->join('tbl_pankarama_karama', 'tbl_pankarama_karama.panchkarama_id = tbl_panchkarma.ID', 'left');
-
-			$this->db->where("DATE_FORMAT(tbl_panchkarma.pdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-			$this->db->where("DATE_FORMAT(tbl_panchkarma.pdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-		}elseif($table === 'tbl_physio'){
-			$this->db->select("tbl_physio.*,  GROUP_CONCAT(DISTINCT CONCAT(tbl_physio_therapy.therapy_title,' - ',tbl_physio_therapy.therapy_value) 
-			ORDER BY tbl_physio_therapy.physio_id desc
-			SEPARATOR ' <br> ') as therapy_data, tbl_ipd_patient.ipdno");
-			$this->db->from($table);
-			$this->db->join('tbl_opd_patient', 'tbl_physio.Crno = tbl_opd_patient.CRNO AND tbl_physio.series = tbl_opd_patient.Series', 'inner');
-			$this->db->join('tbl_ipd_patient', 'tbl_physio.Crno = tbl_ipd_patient.crno AND tbl_physio.series = tbl_ipd_patient.Series', 'left');
-
-			$this->db->join('tbl_physio_therapy', 'tbl_physio_therapy.physio_id = tbl_physio.ID', 'left');
-
-			$this->db->where("DATE_FORMAT(tbl_physio.pdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-			$this->db->where("DATE_FORMAT(tbl_physio.pdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-		}elseif($table === 'n_report_testm')
-		{
-		$this->db->select("tbl_opd_patient.*, n_report_testm.*, tbl_ipd_patient.ipdno");
-		$this->db->from($table);
-		$this->db->join('tbl_opd_patient', 'n_report_testm.crno = tbl_opd_patient.CRNO AND n_report_testm.series = tbl_opd_patient.Series', 'inner');
-		$this->db->join('tbl_ipd_patient', 'n_report_testm.crno = tbl_ipd_patient.crno AND n_report_testm.series = tbl_ipd_patient.Series', 'left');
-		if($startDate && $endDate){
-			$this->db->where("DATE_FORMAT(n_report_testm.DDATE,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-			$this->db->where("DATE_FORMAT(n_report_testm.DDATE,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-		}		
-		}elseif($table === 'tbl_receipt')
-		{
-		$this->db->select("tbl_opd_patient.*, tbl_receipt.*");
-		$this->db->from($table);
-		$this->db->join('tbl_opd_patient', 'tbl_receipt.CRNO = tbl_opd_patient.CRNO AND tbl_receipt.series = tbl_opd_patient.Series', 'inner');
-		//$this->db->join('tbl_ipd_patient', 'tbl_receipt.CRNO = tbl_ipd_patient.crno AND tbl_receipt.series = tbl_ipd_patient.Series', 'left');
-		if($startDate && $endDate){
-			$this->db->where("DATE_FORMAT(tbl_receipt.ddate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-			$this->db->where("DATE_FORMAT(tbl_receipt.ddate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-		}		
-		}else{
-			//echo $table; exit;
 			$this->db->select($table.".*");
-			if($table === 'tbl_opd_patient' ){
-				$this->db->select("GROUP_CONCAT(tbl_opd_treatment.medicine ORDER BY tbl_opd_treatment.ID ASC SEPARATOR '<br>') as treatment");
-				//$this->db->select("tbl_opd_treatment.medicine as treatment");
+			if ($table == 'tbl_medicine_dispencing_sales'){
+				$this->db->select("tbl_opd_patient.PName");
+				$this->db->select("tbl_medicine_master_stock.med_name");
+			}else if ($table == 'tbl_medicine_add_puchase'){
+				$this->db->select("tbl_medicine_master_stock.med_name");
 			}
 			$this->db->from($table);
-			//// add where condition for "tbl_opd_patient"
-			//$startDate = ($this->input->post('startDate')) ? $this->input->post('startDate'): date('m/d/Y');
-			//$endDate = ($this->input->post('endDate')) ? $this->input->post('endDate'): date('m/d/Y');
-
-			if('report' !== $this->router->fetch_method() && $table === 'tbl_ipd_patient'){
-				$this->db->where("DATE_FORMAT(tbl_opd_patient.opddate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-				$this->db->where("DATE_FORMAT(tbl_opd_patient.opddate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
+			if('report' !== $this->router->fetch_method() && $table === 'tbl_medicine_master_stock'){
+				//$this->db->where("DATE_FORMAT(tbl_medicine_master_stock.created,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
+				//$this->db->where("DATE_FORMAT(tbl_medicine_master_stock.created,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
 			 }
 
-			if($table === 'tbl_opd_patient' )
-			{
-				
-				$this->db->join('tbl_opd_treatment', 'tbl_opd_treatment.crno = tbl_opd_patient.CRNO ', 'left');
+			 if ($table == 'tbl_medicine_dispencing_sales'){
+				$this->db->join('tbl_opd_patient', 'tbl_opd_patient.CRNO = tbl_medicine_dispencing_sales.crno and tbl_opd_patient.Series = tbl_medicine_dispencing_sales.Series');
+				$this->db->join('tbl_medicine_master_stock', 'tbl_medicine_master_stock.ID = tbl_medicine_dispencing_sales.med_id');
+			}
 
-
-				
-				if($startDate && $endDate){
-					$this->db->where("DATE_FORMAT(tbl_opd_patient.opddate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-					$this->db->where("DATE_FORMAT(tbl_opd_patient.opddate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-				}				
+			if ($table == 'tbl_medicine_add_puchase'){
+				$this->db->join('tbl_medicine_master_stock', 'tbl_medicine_master_stock.ID = tbl_medicine_add_puchase.med_id');
+			}
+			if ($table !== 'tbl_medicine_master_stock'){
+				if ($startDate && $endDate) {
+						$this->db->where("DATE_FORMAT(".$table.".created,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
+						$this->db->where("DATE_FORMAT(".$table.".created,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
+				} else if($startDate) {
+						$this->db->where("DATE_FORMAT(".$table.".created,'%Y-%m-%d') =", date("Y-m-d", strtotime($startDate)));
+				}			
+			}
+			if ($this->input->post('category')) {
+				$this->db->where($table.".category", $this->input->post('category'));
 			}
 			
-			if($table === 'tbl_cert_birth' )
-			{
-			
-				if($startDate && $endDate){
-					$this->db->where("DATE_FORMAT(tbl_cert_birth.birthdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-					$this->db->where("DATE_FORMAT(tbl_cert_birth.birthdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-				}				
-			}			
-			
-			if($table === 'tbl_cert_death' )
-			{
-			 
-				if($startDate && $endDate){
-					$this->db->where("DATE_FORMAT(tbl_cert_death.deathdate,'%Y-%m-%d') >=", date("Y-m-d", strtotime($startDate)));
-					$this->db->where("DATE_FORMAT(tbl_cert_death.deathdate,'%Y-%m-%d') <=", date("Y-m-d", strtotime($endDate)));
-				}				
-			}	
-		}		
-		if($this->input->post('Department')){
-			$this->db->where("tbl_opd_patient.Department", $this->input->post('Department'));
-		}
-		if($table === 'tbl_gynec'){
-			$this->db->group_by('tbl_gynec.ID');
-		}
-		if($table === 'tbl_panchkarma'){
-			$this->db->group_by('tbl_panchkarma.ID');
-		}
-		if($table === 'tbl_physio'){
-			$this->db->group_by('tbl_physio.ID');
-		}
-		if($table === 'tbl_ipd_patient'){
-			$this->db->group_by('tbl_ipd_patient.crno');
-		}
-		if($table === 'tbl_opd_patient'){
-			$this->db->group_by('tbl_opd_patient.crno');
-		}
-
-		if($table === 'tbl_opd_patient' ){
-			$this->db->order_by($table.'.CRNO', 'ASC');	
-		}else{
-			$this->db->order_by($table.'.ID', 'ASC');	
-		}
-			
-		
+			if ($table == 'tbl_medicine_dispencing_sales'){
+				if($this->input->post('dispensary_sale_report') == 3) {
+					$this->db->where($table.".ipdno", 1);
+				} else if($this->input->post('dispensary_sale_report') == 2) {
+					$this->db->where($table.".ipdno", NULL);
+				}
+			}
 		if($type){
             return $this->db->get()->num_rows();
         }else{
@@ -451,306 +270,81 @@ if($result->CRNO){
 
 	function save_data(){
 		$table = $this->input->post('tbl');
-		
 		$update = $this->input->post();
-		
-
-		if($table == 'tbl_gynec'){
-			$procudreData = $update['name'];
-			unset($update['name']);
-		}
-		if($table == 'tbl_panchkarma'){
-			$karamaData = $update['name'];
-			unset($update['name']);
-		}
-		if($table == 'tbl_physio'){
-			$therapyData = $update['name'];
-			unset($update['name']);
-		}
-		if($update['tbl'] === 'tbl_bedmaster')
-		{
-			$update['Description'] = $update['Department'].','.$update['Ward'] .','.$update['bedCode'];
-		}
-		
  		unset($update['ID']);		
 		unset($update['tbl']);
-		if($update['pdate']){
-			$update['pdate'] = get_database_date($update['pdate']);
+		if($update['med_date']){
+			$update['med_date'] 		= get_database_date($update['med_date']);
 		}
-
-		if($update['opddate']){
-			$update['opddate'] = get_database_date($update['opddate']);
+		if($update['date_of_expiry']){
+			$update['date_of_expiry'] 		= get_database_date($update['date_of_expiry']);
 		}
-		if($update['doa']){
-			$update['doa'] 		= get_database_date($update['doa']);
-			
-		}
-		//////////////////////for anc//////////////////
-		if($update['ddate']){  
-			$update['ddate'] 		= get_database_date($update['ddate']);
-		}
-
-		if($update['lmp']){
-			$update['lmp'] 		= get_database_date($update['lmp']);
-		}
-		if($update['edd']){
-			$update['edd'] 		= get_database_date($update['edd']);
-		}
-		//////////////////////for certificates//////////////////
-		if($update['dod']){
-			
-			$update['dod'] 		= get_database_date($update['dod']);
-			
-			$update['nod']		= dateDiff($update['doa'], $update['dod']);
-		}
-		if($update['birthdate']){
-			$update['birthdate'] 		= get_database_date($update['birthdate']);
-		}
-		if($update['deathdate']){
-			$update['deathdate'] 		= get_database_date($update['deathdate']);
-		}
-		if($update['Doj']){
-			$update['Doj'] 		= get_database_date($update['Doj']);
-		}
-		if($update['validupto']){
-			$update['validupto'] 		= get_database_date($update['validupto']);
-		}
-		// for diet table
-		if($update['sdate']){
-			$update['sdate'] 		= get_database_date($update['sdate']);
-		}
-		if($update['height'] && $update['weight'] && $table == 'tbl_diet'){
-			$height = (float)$update['height']/100;
-			$update['BMI'] = round(((float)$update['weight'] / (float)($height * $height)), 2);
-		}
-		if($update['DDATE']){
-			$update['DDATE'] 		= get_database_date($update['DDATE']);
-		}
-		if($update['xdate']){
-			$update['xdate'] 		= get_database_date($update['xdate']);
-		}
-		if($update['gdate']){
-			$update['gdate'] 		= get_database_date($update['gdate']);
-		}
-		/// for surgery table
-		if($table == 'tbl_surgery'){
-		if(!$update['patient_verified']){ $update['patient_verified'] 				= 0; }
-		if(!$update['site_surgery_verified']){ $update['site_surgery_verified'] 	= 0; }
-		if(!$update['side_surgery_verified']){ $update['side_surgery_verified'] 	= 0; }
-		if(!$update['surgery_major_minor']){ $update['surgery_major_minor'] 		= 0; }
-		if(!$update['preoperative_medication']){ $update['preoperative_medication'] = 0; }
-		}
-		/// Lab entry
-		if($update['ORGCHILD'] > 0 ){ $update['CHILD'] = $this->db->select('PARENT')->from('n_master_fields')->where(array('ID' => $update['ORGCHILD']))->get()->row()->PARENT; }
-		if(!$update['HCODE']){unset($update['HCODE']);}
-		if(!$update['TCODE']){unset($update['TCODE']);}
-		if(!$update['CHILD']){unset($update['CHILD']);}
-
-		if($table == 'n_report_testm'){
-			$TEST = $update['TEST'];
-			unset($update['TEST']);	
+		if($update['pur_date']){
+			$update['pur_date'] 		= get_database_date($update['pur_date']);
 		}
 		$id = $this->input->post('ID');
-			
-			
 	            if($id){
 					if($table == 'tbl_ipd_patient'){
 					$saved_data = $this->get_data($id, 'tbl_ipd_patient');
-					
 						if($saved_data->bedid == $update['bedid']){
 							$updatebed['Available'] 	= 1;
 							$this->db->where('ID', $update['bedid']);
 							$this->db->update('tbl_bedmaster', $updatebed); 
-							
 						}else{
-
 							$updatebed['Available'] 	= 1;
 							$this->db->where('ID', $update['bedid']);
 							$this->db->update('tbl_bedmaster', $updatebed); 
-							
 							$updatebed['Available'] 	= 0;
 							$this->db->where('ID', $saved_data->bedid);
 							$this->db->update('tbl_bedmaster', $updatebed); 
 						}
 					}
-					if($table == 'tbl_discharge_patient'){
-						$updateipd['isadmit'] 			= 0;
-						$this->db->where('crno', $update['crno']);
-						//$this->db->where('Series', $update['Series']);
-						$this->db->where('isadmit', 1);
-						$this->db->update('tbl_ipd_patient', $updateipd); 
-		
-						$updateopd['isAdmit'] 			= 0;
-						$this->db->where('CRNO', $update['crno']);
-						//$this->db->where('Series', $update['Series']);
-						$this->db->where('isAdmit', 1);
-						$this->db->update('tbl_opd_patient', $updateopd); 
-		
-						$updatebed['Available'] 		= 0;
-						$this->db->where('ID', $update['bedid']);
-						$this->db->update('tbl_bedmaster', $updatebed); 
-						unset($update['bedid']);
+					if($table == 'tbl_medicine_dispencing_sales'){
+						$this->db->select("tbl_medicine_dispencing_sales.*");
+						$this->db->from('tbl_medicine_dispencing_sales');
+						$this->db->where(array("tbl_medicine_dispencing_sales.ID" => $id));
+						$saleMedData = $this->db->get()->row();
 					}
-					$this->db->where('ID', $id);
-					$this->db->update($table, $update);   
-                }else{					
-			if($table == 'tbl_ipd_patient'){
-				$updateopd['isAdmit'] 	= 1;
-				$update['isadmit'] 	= 1;
-				$this->db->where('CRNO', $update['crno']);
-				$this->db->where('Series', $update['Series']);
-				$this->db->update('tbl_opd_patient', $updateopd); 
 
-				$updatebed['Available'] 	= 1;
-				$this->db->where('ID', $update['bedid']);
-				$this->db->update('tbl_bedmaster', $updatebed); 
-			}
-			if($table == 'tbl_discharge_patient'){
-
-
-				$updateipd['isadmit'] 	= 0;
-				$this->db->where('crno', $update['crno']);
-				//$this->db->where('Series', $update['Series']);
-				$this->db->where('isadmit', 1);
-				$this->db->update('tbl_ipd_patient', $updateipd); 
-
-				$updateopd['isAdmit'] 	= 0;
-				$this->db->where('CRNO', $update['crno']);
-				//$this->db->where('Series', $update['Series']);
-				$this->db->where('isAdmit', 1);
-				$this->db->update('tbl_opd_patient', $updateopd); 
-
-				$updatebed['Available'] 	= 0;
-				$this->db->where('ID', $update['bedid']);
-				$this->db->update('tbl_bedmaster', $updatebed); 
-				unset($update['bedid']);
-			}
-			// for x-ray
-			if($table == 'tbl_x_ray'){
-			$code =  $this->get_year_code();
-			$this->db->select("MAX(tbl_x_ray.sr_no) as sr_no");
-			$this->db->from('tbl_x_ray');
-			$this->db->where(array('tbl_x_ray.Series' => $code));
-			$update['sr_no'] = ((int)$this->db->get()->row()->sr_no + 1);
-			//$update['Series'] = $code;
-			}	
-			// for lab entry
-			if($table == 'n_report_testm'){
-				$code =  $this->get_year_code();
-				$this->db->select("MAX(n_report_testm.sr_no) as sr_no");
-				$this->db->from('n_report_testm');
-				$this->db->where(array('n_report_testm.Series' => $code));
-				$update['sr_no'] = ((int)$this->db->get()->row()->sr_no + 1);
-				//$update['series'] = $code;
-				}	
-				if($table == 'tbl_receipt'){
-					$code =  $this->get_year_code();
-					$this->db->select("MAX(tbl_receipt.sr_no) as sr_no");
-					$this->db->from('tbl_receipt');
-					$this->db->where(array('tbl_receipt.Series' => $code));
-					$update['sr_no'] = ((int)$this->db->get()->row()->sr_no + 1);
-					//$update['series'] = $code;
-					}	
-
-				//print_r($update); exit;
-				if($table == 'tbl_opd_patient'){
-					if($update['CRNO']){
-					$update['CRNO']	= $this->next_cr_no();
-				}
-				}
-				$dataExistID = 0; 
-				if($table == 'tbl_ipd_patient'){
-					if($update['ipdno']){
-					$update['ipdno']	= $this->get_current_iptno();
-					
-					$this->db->select("ID");
-					$this->db->from('tbl_ipd_patient');
-					$this->db->where(array('tbl_ipd_patient.crno' => $update['crno'], 'tbl_ipd_patient.Series' => $update['Series']));
-					$dataExistID = $this->db->get()->row()->ID;
-				}
-				}
-				if($dataExistID == 0){
-				//print_r($update); exit;
-				$this->db->insert($table, $update); 
-				$id = $this->db->insert_id();
-				}
-			}
-				if($table == 'tbl_gynec' && $procudreData){
-					$this->db->where('gynec_id', $id);
-					$this->db->delete('tbl_gynec_procedure');
-					$indertData 						= [];
-					foreach($procudreData as $key => $item){
-						$insertData['gynec_id'] 		= $id;
-						$insertData['procedure_title'] 	= $this->db->select('name')->from('tbl_procedure')->where('ID', $key)->get()->row()->name;
-						$insertData['procedure_id'] 	= $key;
-						$insertData['procedure_value'] 	= $item;
-						$allinsertData[] 				= $insertData;
-					}
-					$this->db->insert_batch('tbl_gynec_procedure', $allinsertData); 	
-				}		
-				if($table == 'tbl_panchkarma' && $karamaData){
-					$this->db->where('panchkarama_id', $id);
-					$this->db->delete('tbl_pankarama_karama');
-					$indertData 						= [];
-					foreach($karamaData as $key => $item){
-						$insertData['panchkarama_id'] 	= $id;
-						$insertData['karama_title'] 	= $this->db->select('name')->from('tbl_karama')->where('ID', $key)->get()->row()->name;
-						$insertData['karama_id'] 		= $key;
-						$insertData['karama_value'] 	= $item;
-						$allinsertData[] 				= $insertData;
-					}
-					$this->db->insert_batch('tbl_pankarama_karama', $allinsertData); 	
-				}
-
-
-
-				if($table == 'tbl_physio' && $therapyData){
-					$this->db->where('physio_id', $id);
-					$this->db->delete('tbl_physio_therapy');
-					$indertData 						= [];
-					foreach($therapyData as $key => $item){
-						$insertData['physio_id'] 		= $id;
-						$insertData['therapy_title'] 	= $this->db->select('name')->from('tbl_therapy')->where('ID', $key)->get()->row()->name;
-						$insertData['therapy_id'] 		= $key;
-						$insertData['therapy_value'] 	= $item;
-						$allinsertData[] 				= $insertData;
-					}
-				
-					$this->db->insert_batch('tbl_physio_therapy', $allinsertData); 	
-				}
-
-
-				if($table == 'n_report_testm'){
-
-					$this->db->where('PCODE', $id);
-					$this->db->delete('n_report_testt');
-
-		
-					$allinsertData = [];
-					foreach($TEST['TCODE'] as $key => $item){
-						$insertData 			= [];
-						$insertData['PCODE'] 	= $id;
-						$insertData['series'] 	= $update['series'];
-						$insertData['TCODE'] 	= $item;
-						$insertData['DDATE'] 	= $update['DDATE'];
-						$insertData['TNAME'] 	= $TEST['TNAME'][$key];
-						$insertData['RESULT'] 	= $TEST['RESULT'][$key];
-						$insertData['UNIT'] 	= addslashes($TEST['UNIT'][$key]);
-						$insertData['RANGEFROM']= $TEST['RANGEFROM'][$key];
-						$insertData['RANGETO'] 	= $TEST['RANGETO'][$key];
-
-						if ($insertData['RESULT'] <= $insertData['RANGETO'] && $insertData['RESULT'] >= $insertData['RANGEFROM'])
+				if((int)$saleMedData->unit_qty !== (int)$update['unit_qty'])
 						{
-							$insertData['FRESULT'] = $insertData['RESULT'];
-						} else {
-							$insertData['NRESULT'] 	= $insertData['RESULT'];
+							$unit_qty = (int)$update['unit_qty'] - (int)$saleMedData->unit_qty;	
 						}
-						$this->db->insert('n_report_testt', $insertData);
-						$allinsertData[] 				= $insertData;
-					}					
+					$this->db->where('ID', $id);
+					$this->db->update($table, $update);		
+				} else {		
+					$this->db->insert($table, $update);
+					$id = $this->db->insert_id();
+					$unit_qty = (int)  $update['unit_qty'];
 				}
-
-return true;
+				if($table == 'tbl_medicine_dispencing_sales'){
+					$this->db->select("tbl_medicine_master_stock.*");
+					$this->db->from('tbl_medicine_master_stock');
+					$this->db->where(array("tbl_medicine_master_stock.ID" => $update['med_id']));
+					$medData = $this->db->get()->row();
+					
+					if($medData->ID > 0) {
+						$updatData['qty'] = (int) $medData->qty - (int) $update['qty'];
+						$updatData['unit_qty'] = (int) $medData->unit_qty - $unit_qty;					
+						$this->db->where('ID', $medData->ID);
+						$this->db->update('tbl_medicine_master_stock', $updatData); 
+					}
+				}
+				if($table == 'tbl_medicine_add_puchase'){
+					$this->db->select("tbl_medicine_master_stock.*");
+					$this->db->from('tbl_medicine_master_stock');
+					$this->db->where(array("tbl_medicine_master_stock.ID" => $update['med_id']));
+					$medData = $this->db->get()->row();
+					if($medData->ID > 0) {
+						$updatData['qty'] = (int) $medData->qty + (int) $update['qty'];
+						$updatData['unit_qty'] = (int) $medData->unit_qty + (int)  $update['unit_qty'];
+						$this->db->where('ID', $medData->ID);
+						$this->db->update('tbl_medicine_master_stock', $updatData); 
+	
+					}
+				}
+				
+		return true;
 	}
 
 	function get_list_occupancy(){
@@ -762,25 +356,29 @@ return true;
 			return $this->db->get()->result(); 
 			
 	}	
-	function get_all_list_occupancy($method, $date){
 
-		$query = "SELECT d.series,d.doa as opddate,d.crno as CRNO,d.ipdno,o.PName,o.sex as Sex,o.age as Age,
-		o.address as Address,b.description as bedname,i.doctorname as DoctorName, i.diagnosis as Diagnosis FROM `tbl_discharge_patient` as d,`tbl_ipd_patient` as i,`tbl_opd_patient` as o,`tbl_bedmaster` as b 
-		WHERE d.doa <= ".$date." AND d.dod >= ".$date." and i.bedid=b.bedcode and d.crno=i.crno and d.crno=o.crno and d.Series=i.Series and d.Series=o.Series 
-		LIMIT 10";
-		$result = $this->db->query($query);
-		return $result->result(); 
-}
-	function get_list_department()
+	function get_categories()
 	{
-			$this->db->select("Department");
-			$this->db->from('tbl_departmentmaster');
+			$this->db->select("name");
+			$this->db->from('tbl_medicine_category');
 			$this->db->order_by('ID', 'desc');
 			$data = $this->db->get()->result(); 
+			$datareturn = array();
 			foreach($data as $item):
-					$datareturn[$item->Department] = $item->Department; 
+					$datareturn[$item->name] = $item->name; 
 			endforeach;	
-			//print_r($datareturn); exit;
+			return $datareturn;
+	}
+	function get_units()
+	{
+			$this->db->select("name");
+			$this->db->from('tbl_medicine_unit');
+			$this->db->order_by('ID', 'desc');
+			$data = $this->db->get()->result(); 
+			$datareturn = array();
+			foreach($data as $item):
+					$datareturn[$item->name] = $item->name; 
+			endforeach;	
 			return $datareturn;
 	}
 function get_list_ward()
@@ -860,6 +458,19 @@ function get_list_ward()
 			return $this->db->get()->row(); 	
 		}
 
+		function get_data_by_column_phar($table, $column, $value, $opt, $year_code=NULL)
+			{ 
+				$yearcode = $this->get_year_code();
+				$this->db->select('tbl_opd_patient.*, DATE_FORMAT(tbl_ipd_patient.doa, "%d/%m/%Y") AS doa, tbl_bedmaster.Description');
+				$this->db->from('tbl_opd_patient');
+				$this->db->join('tbl_ipd_patient', 'tbl_ipd_patient.crno = tbl_opd_patient.CRNO AND tbl_ipd_patient.Series = tbl_opd_patient.Series', 'left');
+				$this->db->join('tbl_bedmaster', 'tbl_ipd_patient.bedid = tbl_bedmaster.ID', 'left');
+				$this->db->where(array('tbl_opd_patient.CRNO' => $value));
+				if($yearcode){
+					$this->db->where(array('tbl_opd_patient.Series' => $yearcode));
+				}
+				return $this->db->get()->row(); 	
+			}
 
 	function get_data_by_column($table, $column, $value, $opt, $year_code=NULL){ 
 	$yearcode = $this->get_year_code();
@@ -1293,5 +904,21 @@ function get_list_therapy_count(){
 		$this->db->limit(10, 0);
 		return $this->db->get()->result(); 
 		
+	}
+
+	function search_medicines_list($keyword) {
+		$this->db->select("tbl_medicine_master_stock.ID, CONCAT(med_name, '_',batch_id,'_',rack) AS med_name ");
+		$this->db->from('tbl_medicine_master_stock');
+		if($keyword){
+			$this->db->like('tbl_medicine_master_stock.med_name', $keyword);
+		}
+		$this->db->limit(10, 0);
+		return $this->db->get()->result(); 
+	}
+	function get_medicine ($id, $column) {
+		$this->db->select("tbl_medicine_master_stock.".$column);
+		$this->db->from('tbl_medicine_master_stock');
+		$this->db->like('tbl_medicine_master_stock.id', $id);
+		return $this->db->get()->row()->$column; 
 	}
 }

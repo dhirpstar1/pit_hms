@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Master extends CI_Controller {
+class Dispensaries extends MX_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -19,16 +19,18 @@ class Master extends CI_Controller {
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 	
-	
+  public $CI = NULL;    
+
 	function __construct()
 	  {
 		parent::__construct();
-		error_reporting(0);
+		$this->CI = & get_instance();
 		
 		$this->load->library('ion_auth');
-		$this->load->model('Master_model');
+		$this->load->model('Dispensary_model');
 		$this->load->helper(array('form', 'my_helper'));
-        $this->load->library('form_validation');
+		$this->load->library('form_validation');
+
 		if (!$this->ion_auth->logged_in())
 		{
 		  //redirect them to the login page
@@ -36,12 +38,12 @@ class Master extends CI_Controller {
 		}
 		$this->data['page_title'] = 'HMS - Dashboard';
     $this->pagenum = 150;
-    $this->config_data = $data['config_data'] = $this->Master_model->get_cofig_data();
+    $this->config_data = $data['config_data'] = $this->Dispensary_model->get_cofig_data();
     $this->load->vars($data);
 
     $this->receipt_types = array('OPD Receipt' => 'OPD Receipt', 'IPD Receipt' => 'IPD Receipt', 'Investigation Receipt' => 'Investigation Receipt', 'Medicine Receipt' => 'Medicine Receipt', 'Procedure Receipt' => 'Procedure Receipt');
 	  }
-  
+
   protected function render($the_view = NULL, $template = 'admin_master')
 	  {
 		parent::render($the_view, $template);
@@ -54,7 +56,7 @@ public function get_year_code(){
 	list($eday, $emonth, $eyear) = explode('/', $this->input->post('endDate'));
 	
 	if($syear == $eyear){
-		echo $this->Master_model->get_year_code($syear);
+		echo $this->Dispensary_model->get_year_code($syear);
 	}else{
 		echo 'ok';
 	}
@@ -62,113 +64,85 @@ public function get_year_code(){
 
  public function update( $table='tbl_mst_doctor', $id = null)
 	{	
-
 		if ($this->input->post()) { 
-  				  $this->Master_model->save_data();
+  				  $this->Dispensary_model->save_data();
             redirect(str_replace(base_url(),'',$_SERVER['HTTP_REFERER']));	
-      }
-      
-if($id > 0){
-  $data['data'] = $this->Master_model->get_data($id, $table);
-  if( $table == 'tbl_gynec'){
-  $data['saveprocedures'] = $this->Master_model->get_gynec_procedure($id);
-  }
-  if( $table == 'tbl_panchkarma'){
-    $data['savekaramas'] = $this->Master_model->get_panchkarma_karama($id);
-    }
-    if( $table == 'tbl_physio'){
-      $data['savephysio'] = $this->Master_model->get_physio_therapy($id);
-    }
-    if( $table == 'n_master_fields'){
-      //print_r($data['data']); exit;
-      if($data['data']->HCODE){
-        $data['subheads'] = $this->Master_model->get_subheads($data['data']->HCODE);
-        $data['subtestheads'] = $this->Master_model->get_subtestheads($data['data']->TCODE);
+    }     
+    if($id > 0){
+      $data['data'] = $this->Dispensary_model->get_data($id, $table);
+      if( $table == 'tbl_gynec'){
+      $data['saveprocedures'] = $this->Dispensary_model->get_gynec_procedure($id);
       }
     }
-}
-    $data['departments']    = array('' => '-- Select --') + $this->Master_model->get_list_department();
-    $data['wards']          = $this->Master_model->get_list_ward();
-    $data['doctors']        = $this->Master_model->get_list_doctor();
-    $data['receipt_types']  = $this->receipt_types;
-    $data['procedures']     = $this->Master_model->get_list_procedure();
-    $data['karamas']        = $this->Master_model->get_list_karamas();
-    $data['therapy']        = $this->Master_model->get_list_therapy();
-
-    if( $table == 'n_master_testunderhead' || $table == 'n_master_fields' || $table == 'n_report_testm'){
-    $data['testheads'] = $this->Master_model->get_list_lab_heads();
-    //$data['subtestheads'] = $this->Master_model->get_list_lab_sub_test_heads();
-    }  
-
-    if( $table == 'tbl_opd_patient'){
-    $data['next_cr_no'] = $this->Master_model->next_cr_no();
-    }
-    if( $table == 'tbl_ipd_patient'){
-      if($data['data']->department){
-        $data['bedids'] = $this->Master_model->get_bedids($data['data']->department, $data['data']->bedid);
-      }
-      }
-      if( $table == 'tbl_karama'){
-        $data['karama_parents'] = array_unshift_ref($this->Master_model->get_list_karamas('parent'), '--Select--') ;
-        }
-        if( $table == 'tbl_therapy'){
-          $data['therapy_parents'] = array_unshift_ref($this->Master_model->get_list_therapy('parent'), '--Select--') ;
-          }
-        if( $table == 'tbl_stock_item'){
-          $data['stocktype'] = $this->Master_model->get_stocktype();
-          }
-          $data['tbl'] = $table;
-
-         
-          echo $this->load->view($table,$data, true);
-        exit;		
+    $data['categories'] = $this->Dispensary_model->get_categories();
+    $data['units'] = $this->Dispensary_model->get_units();
+    $data['tbl'] = $table;
+    echo $this->load->view($table,$data, true);
+    exit;		
   }
   public function get_data_opd( $table='tbl_mst_doctor', $column = null, $value = null, $opt = null)
 	{	
-        echo json_encode($this->Master_model->get_data_by_column_opd($table, $column, $value, $opt));
+        echo json_encode($this->Dispensary_model->get_data_by_column_opd($table, $column, $value, $opt));
         exit;		
   }
  public function get_doctors( $department='all')
 	{	
-        echo json_encode($this->Master_model->get_list_doctor($department));
+        echo json_encode($this->Dispensary_model->get_list_doctor($department));
+        exit;		
+  }
+  public function search_medicines( $keyword = NULL)
+	{	
+    $data = $this->Dispensary_model->search_medicines_list($keyword);
+    $items = array();
+    foreach($data as $item) {
+      $newitem['id'] = $item->ID;
+      $newitem['text'] = $item->med_name;
+      $items[] = $newitem;
+    }
+    echo json_encode($items);
         exit;		
   }
 
   public function get_data( $table='tbl_mst_doctor', $column = null, $value = null, $opt = null)
 	{	
-        echo json_encode($this->Master_model->get_data_by_column($table, $column, $value, $opt));
+        echo json_encode($this->Dispensary_model->get_data_by_column($table, $column, $value, $opt));
+        exit;		
+  }
+  public function get_data_phar( $table='tbl_mst_doctor', $column = null, $value = null, $opt = null)
+	{	
+        echo json_encode($this->Dispensary_model->get_data_by_column_phar($table, $column, $value, $opt));
         exit;		
   }
   public function get_data_list( $table='tbl_mst_doctor', $column = null, $value = null, $opt = null)
 	{	
-        echo json_encode($this->Master_model->get_data_list_by_column($table, $column, $value, $opt));
+        echo json_encode($this->Dispensary_model->get_data_list_by_column($table, $column, $value, $opt));
         exit;		
   }
   public function get_lab_subtesthead_list()
 	{	
-        echo json_encode($this->Master_model->get_list_lab_sub_test_heads_tccode($this->input->post('subhead')));
+        echo json_encode($this->Dispensary_model->get_list_lab_sub_test_heads_tccode($this->input->post('subhead')));
         exit;		
   }
   public function get_lab_head_sub_data($table, $felid)
 	{	
     if($table == 'n_master_fields'){
-        $jsondata = nested2ul($this->Master_model->get_lab_head_sub_data($table, $felid, $this->input->post('selected_subhead')));
-       // $jsondata = $this->Master_model->get_lab_head_sub_data($table, $felid, $this->input->post('selected_subhead'));
+        $jsondata = nested2ul($this->Dispensary_model->get_lab_head_sub_data($table, $felid, $this->input->post('selected_subhead')));
+       // $jsondata = $this->Dispensary_model->get_lab_head_sub_data($table, $felid, $this->input->post('selected_subhead'));
     }else{
-        $jsondata = $this->Master_model->get_lab_head_sub_data($table, $felid, $this->input->post('selected_subhead'));
+        $jsondata = $this->Dispensary_model->get_lab_head_sub_data($table, $felid, $this->input->post('selected_subhead'));
     }
     echo json_encode($jsondata);
         exit;		
   }
   public function get_custom_list( $table='tbl_mst_doctor', $column = null, $value)
 	{	
-          $data['listings'] = $this->Master_model->get_list_data($table, $column, $value);
+          $data['listings'] = $this->Dispensary_model->get_list_data($table, $column, $value);
           $data['show_listings'] = true;
           echo $this->load->view($table, $data, true);
   }
   public function selected_test()
 	{	
-          $data['listings'] = nested2ul($this->Master_model->get_lab_head_sub_data('n_master_fields','',''));
+          $data['listings'] = nested2ul($this->Dispensary_model->get_lab_head_sub_data('n_master_fields','',''));
           $data['selected_tests'] = $this->input->post('selected_tests');
           
           echo $this->load->view('selected_test', $data, true);
@@ -178,7 +152,7 @@ if($id > 0){
 
   public function update_with_id( $table='tbl_mst_doctor', $id = null)
 	{	
-          $this->Master_model->save_data();
+          $this->Dispensary_model->save_data();
           if($this->input->post('tbl') == 'tbl_opd_treatment' || $this->input->post('tbl') == 'tbl_ipd_treatment'){
             echo $this->input->post('crno');
           }else{  
@@ -188,18 +162,18 @@ if($id > 0){
   }
   public function delete( $table='tbl_mst_doctor', $id = null)
 	{	
-  			echo $this->Master_model->delete_data($table, $id);
+  			echo $this->Dispensary_model->delete_data($table, $id);
  			  exit;		
 	}
 
   public function get_custom_bed_list( )
 	{	
-  			echo json_encode($this->Master_model->get_bedids($this->input->post('department')));
+  			echo json_encode($this->Dispensary_model->get_bedids($this->input->post('department')));
  			  exit;		
   }
   public function get_lab_subhead_list( )
 	{	
-  			echo json_encode($this->Master_model->get_subheads($this->input->post('head')));
+  			echo json_encode($this->Dispensary_model->get_subheads($this->input->post('head')));
  			  exit;		
   }
   
@@ -209,24 +183,24 @@ if($id > 0){
     
     if($ID > 0){
             if($method == 'tbl_opd_patient'){
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'CRNO', $ID, false); 
-              $data['treatments'] = $this->Master_model->get_list_data('tbl_opd_treatment', 'crno', $ID); 
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'CRNO', $ID, false); 
+              $data['treatments'] = $this->Dispensary_model->get_list_data('tbl_opd_treatment', 'crno', $ID); 
 
             }elseif($method == 'tbl_ipd_patient'){
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'crno', $ID, false);
-              $data['treatments'] = $this->Master_model->get_list_data('tbl_ipd_treatment', 'crno', $ID); 
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'crno', $ID, false);
+              $data['treatments'] = $this->Dispensary_model->get_list_data('tbl_ipd_treatment', 'crno', $ID); 
             }elseif($method == 'tbl_discharge_patient'){
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'crno', $ID, false, $year_code);
-              $data['treatments'] = $this->Master_model->get_list_data('tbl_ipd_treatment', 'crno', $ID); 
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'crno', $ID, false, $year_code);
+              $data['treatments'] = $this->Dispensary_model->get_list_data('tbl_ipd_treatment', 'crno', $ID); 
             }elseif($method == 'n_report_testm'){
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'ID', $ID, false);
-              $data['tests_options'] = $this->Master_model->get_list_dat_lab('n_report_testt', 'PCODE', $ID); 
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'ID', $ID, false);
+              $data['tests_options'] = $this->Dispensary_model->get_list_dat_lab('n_report_testt', 'PCODE', $ID); 
             }elseif($method == 'tbl_receipt'){
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'ID', $ID, false);
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'ID', $ID, false);
             }elseif($method == 'tbl_x_ray'){
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'ID', $ID, false);
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'ID', $ID, false);
             }else{
-              $data['data']       = $this->Master_model->get_data_by_column($method, 'CRNO', $ID, false);
+              $data['data']       = $this->Dispensary_model->get_data_by_column($method, 'CRNO', $ID, false);
             }
           $html = $this->load->view('print_'.$method, $data, true);
             if($method == 'n_report_testm'){
@@ -246,26 +220,26 @@ if($id > 0){
 
 exit;
     }else{
-      $data['listings'] = $this->Master_model->get_list($method, false, $this->input->post('startDate'), $this->input->post('endDate'), 10000, 0);
+      $data['listings'] = $this->Dispensary_model->get_list($method, false, $this->input->post('startDate'), $this->input->post('endDate'), 10000, 0);
       
       
 	//print_r($data['listings'] ); exit;
       
       if($method == 'tbl_opd_patient' || $method == 'tbl_ipd_patient'){
-      $data['listings_by_departments'] = $this->Master_model->get_list_group($method);
+      $data['listings_by_departments'] = $this->Dispensary_model->get_list_group($method);
 	  
 
-      $data['departments'] = $this->Master_model->get_list_department();
+      $data['departments'] = $this->Dispensary_model->get_list_department();
       }elseif($method == 'tbl_gynec'){
-          $data['procedures'] = $this->Master_model->get_list_procedure();
-          $data['procedures_count'] = $this->Master_model->get_list_procedure_count();
+          $data['procedures'] = $this->Dispensary_model->get_list_procedure();
+          $data['procedures_count'] = $this->Dispensary_model->get_list_procedure_count();
          }elseif($method == 'tbl_panchkarma'){
-          $data['karamas'] = $this->Master_model->get_list_karamas();
-          $data['karamas_count'] = $this->Master_model->get_list_karamas_count();
+          $data['karamas'] = $this->Dispensary_model->get_list_karamas();
+          $data['karamas_count'] = $this->Dispensary_model->get_list_karamas_count();
 
         }elseif($method == 'tbl_physio'){
-          $data['therapy'] = $this->Master_model->get_list_therapy();
-          $data['therapy_count'] = $this->Master_model->get_list_therapy_count();
+          $data['therapy'] = $this->Dispensary_model->get_list_therapy();
+          $data['therapy_count'] = $this->Dispensary_model->get_list_therapy_count();
         }
         
         if($this->input->post('Department')){
@@ -279,39 +253,15 @@ exit;
   }
 
 
-  public function occupancy_report($method = 'tbl_ipd_patient', $ID = 0)
-	{
-    $data['listings'] = $this->Master_model->get_list_occupancy($method, false);
 
-    
-    $html =  $this->load->view('print_occupancy_report', $data, true); 
-    
-    $this->print_pdf( $html,  $method, 'L');
-  }
 
-  public function daily_occupancy_report($method = 'tbl_ipd_patient')
-	{
-    $date = date("Y-m-d", strtotime(get_database_date($this->input->post('startDate'))));
-    $data['listings'] = $this->Master_model->get_all_list_occupancy($method, $date); 
-    $html =  $this->load->view('print_occupancy_report', $data, true); 
-    $this->print_pdf( $html,  $method, 'L');
-  }
-  
 
   public function print_report($method = 'tbl_mst_doctor', $ID = 0)
 	{
-
-    $data['listings'] = $this->Master_model->get_list($method, false, $this->input->post('startDate'), $this->input->post('endDate'), '', '');
-	//print_r($data['listings']); exit; 
-    if($method == 'tbl_opd_patient' || $method == 'tbl_ipd_patient' ||  $method == 'tbl_discharge_patient'){
-      $data['listings_by_departments'] = $this->Master_model->get_list_group($method);
-      $data['departments'] = $this->Master_model->get_list_department();
-    }
-    if($this->input->post('Department')){
-      $data['selected_department'] = $this->input->post('Department'); 
-    }
-	
-	$html =  $this->load->view('print_report_'.$method, $data, true); 
+ini_set('display_errors', 0);
+    $data['listings'] = $this->Dispensary_model->get_list($method, false, $this->input->post('startDate'), $this->input->post('endDate'), '', '');
+    $data['dispensary_sale_report']   = $this->input->post('dispensary_sale_report');
+  	$html =  $this->load->view('print_report_'.$method, $data, true); 
     $filename = str_replace("/", '_', $this->input->post('startDate')). "_To_". str_replace("/", '_', $this->input->post('endDate')). "_". $method; 
     $this->print_pdf( $html,  $filename, 'L', $this->input->post('report_type'));
     exit;
@@ -320,20 +270,17 @@ exit;
 function print_pdf($html, $filename, $pagetype = 'L', $type = NULL){
   ini_set('max_execution_time', 0); 
   ini_set('memory_limit','2048M');
+ // ini_set('display_errors','On');
 
 $htmlarray = explode('||', $html);
-
-//print_r($htmlarray) ; exit;
-
   $this->load->library('Pdf');
-
   // create new PDF document
 $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 // set document information
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('HMS');
-$pdf->SetTitle($config_data['hospital_name']);
-$pdf->SetSubject($config_data['hospital_name']);
+$pdf->SetTitle($this->config_data['hospital_name']);
+$pdf->SetSubject($this->config_data['hospital_name']);
 $pdf->SetKeywords('');
 
 // set default header data
@@ -418,20 +365,6 @@ exit;
 }
 
 
-public function downloads($method = 'tbl_ipd_patient', $page = 0)
-	{
-    $this->load->helper('download');
-    $this->load->helper('directory');
-
-		 $numrows = $this->pagenum;
-     $this->load->library('pagination');
-           
- 		    $data['listings']   = $this->Master_model->get_downloads_list($method, false, $config['per_page'], $page);
-
- 		$this->load->view('header', $data);
-		$this->load->view('downloads',$data);
-		$this->load->view('footer', $data);
-	}
 
 
 
@@ -444,8 +377,8 @@ public function index($method = 'tbl_mst_doctor', $page = 0)
 		 
         $this->load->library('pagination');
          
-        $config['base_url']         = site_url('/master/index/'.$method);
-        $config['total_rows']       = $this->Master_model->get_list($method, true,date('Y-m-d'), date('Y-m-d'), 0, 0);
+        $config['base_url']         = site_url('/dispensaries/index/'.$method);
+        $config['total_rows']       = $this->Dispensary_model->get_list($method, true,date('Y-m-d'), date('Y-m-d'), 0, 0);
         $config['per_page']         = $numrows;
         $config['uri_segment']      = 4;
         $config['num_links']        = 5;  
@@ -471,33 +404,20 @@ public function index($method = 'tbl_mst_doctor', $page = 0)
         $this->pagination->initialize($config);
        // $data['field'] = $field;
        // $data['by'] = $by;
- 		    $data['listings']   = $this->Master_model->get_list($method, false,date('Y-m-d'), date('Y-m-d'), $config['per_page'], $page);
+	      $data['listings']   = $this->Dispensary_model->get_list($method, false,date('Y-m-d'), date('Y-m-d'), $config['per_page'], $page);
         $data['page_links'] = $this->pagination->create_links();
         $data['startDate']  = $this->input->post('startDate');
         $data['endDate']  	= $this->input->post('endDate');
-		$data['page']  		= $page;
-        $data['departments'] = array('' => '-- Select --') + $this->Master_model->get_list_department();
-        if($method == 'tbl_gynec'){
-          $data['procedures'] = $this->Master_model->get_list_procedure();
-          $data['procedures_count'] = $this->Master_model->get_list_procedure_count();
-        }
-        if($method == 'tbl_panchkarma'){
-          $data['karamas'] = $this->Master_model->get_list_karamas();
-          $data['karamas_count'] = $this->Master_model->get_list_karamas_count();
-        }
-        if($method == 'tbl_physio'){
-        //  $data['procedures'] = $this->Master_model->get_list_procedure();
-         // $data['procedures_count'] = $this->Master_model->get_list_procedure_count();
-        }
-       
+		    $data['page']  		= $page;
+			
+        $data['categories'] = array('' => '-- Select --') + $this->Dispensary_model->get_categories();
+        
+		
         $data['postcrno']       = $this->input->post('postcrno');
         $data['receipt_types']  = $this->receipt_types;
-        $data['stocktype']      = $this->Master_model->get_stocktype();
-        $data['Department']    = $this->input->post('Department');
+        $data['category']    = $this->input->post('category');
 
-        if($method === 'n_master_fields'){
-          $data['listings'] = nested2ul($data['listings']);
-        }
+     
 
  		$this->load->view('header', $data);
 		$this->load->view($method.'_list',$data);
@@ -511,9 +431,8 @@ public function report($method = 'tbl_mst_doctor', $page = 0)
 		 $numrows = $this->pagenum;
         $this->load->library('pagination');
         
-        $config['base_url']         = site_url('/master/report/'.$method);
-        $config['total_rows']       = $this->Master_model->get_list($method, true, false, '', '', 0);
-       
+        $config['base_url']         = site_url('/dispensaries/report/'.$method);
+        $config['total_rows']       = $this->Dispensary_model->get_list($method, true, false, '', '', 0);
         $config['per_page']         = $numrows;
         $config['uri_segment']      = 4;
         $config['num_links']        = 5;  
@@ -537,14 +456,16 @@ public function report($method = 'tbl_mst_doctor', $page = 0)
         $config['next_tag_close']   = '</li>';
         
         $this->pagination->initialize($config);
-				
-
- 		$data['listings']   = $this->Master_model->get_list($method, false, '', '', $config['per_page'], $page);
+ 		    $data['listings']       = $this->Dispensary_model->get_list($method, false, '', '', $config['per_page'], $page);
         $data['page_links'] = $this->pagination->create_links();
         $data['startDate']  = ($this->input->post('startDate')) ? $this->input->post('startDate') : date('d/m/Y');
         $data['endDate']    = ($this->input->post('endDate')) ? $this->input->post('endDate') : date('d/m/Y');
-        $data['departments']= array('' => '-- Select --') + $this->Master_model->get_list_department();
-        $data['Department'] = $this->input->post('Department');
+        $data['categories'] = array('' => '-- Select --') + $this->Dispensary_model->get_categories();
+        $data['catgeory']   = $this->input->post('catgeory');
+        $data['dispensary_sale_reports'] = array('' => '-- Select --') + array("" => "All", "2" => "OPD Dispencing", "3" => "IPD Dispencing");
+        $data['dispensary_sale_report']   = $this->input->post('dispensary_sale_report');
+        $data['category']    = $this->input->post('category');
+
 
 //print_r($data['listings'] ); exit;
  		$this->load->view('header', $data);
@@ -559,7 +480,7 @@ public function report($method = 'tbl_mst_doctor', $page = 0)
          
 
         $config['base_url']         = site_url('/master/doctors/');
-        $config['total_rows']       = $this->Master_model->get_list('tbl_mst_doctor', true);
+        $config['total_rows']       = $this->Dispensary_model->get_list('tbl_mst_doctor', true);
 
         $config['per_page']         = $numrows;
         $config['uri_segment']      = 3;
@@ -586,7 +507,7 @@ public function report($method = 'tbl_mst_doctor', $page = 0)
         $this->pagination->initialize($config);
        // $data['field'] = $field;
        // $data['by'] = $by;
- 		$data['listings']   = $this->Master_model->get_list('tbl_mst_doctor', false, $config['per_page'], $page);
+ 		$data['listings']   = $this->Dispensary_model->get_list('tbl_mst_doctor', false, $config['per_page'], $page);
         $data['page_links'] = $this->pagination->create_links();
         
 		$this->load->view('header', $data);
@@ -595,7 +516,7 @@ public function report($method = 'tbl_mst_doctor', $page = 0)
   }
   
   public function get_medicines($keyword){
-    echo json_encode($this->Master_model->get_medicines_list($keyword));
+    echo json_encode($this->Dispensary_model->get_medicines_list($keyword));
   }
 
 }

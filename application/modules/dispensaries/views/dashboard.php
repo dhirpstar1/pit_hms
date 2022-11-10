@@ -25,26 +25,10 @@
             <div class="col-lg-6 col-md-12">              
             <div class="card cardextra">
                 <div class="card-header card-header-warning btnoccRprt">
-                <a href="<?=base_url('/master/occupancy_report');?>" target="_blank" class="btn btn-primary pull-right">Daily Occupancy report <i class="fa fa-print prntIcn" aria-hidden="true"></i></a>
+                  <a href="<?=base_url('/master/occupancy_report');?>" target="_blank" class="btn btn-primary pull-right">Daily Occupancy report <i class="fa fa-print prntIcn" aria-hidden="true"></i></a>
                   <h4 class="card-title">Admit Patient</h4>
                   <p class="card-category">All Admit Patient</p>
                  
-                </div>
-                <div class="card-header card-header-warning btnoccRprt">
-                <form action="<?=base_url('/master/daily_occupancy_report/tbl_ipd_patient');?>" method="post" id="daily_occupancy_report" target="_blank">
-                  <button type="submit" id="daily_occupancy_report_button" class="btn btn-primary pull-right">Daily Occupancy report<i class="fa fa-print prntIcn" aria-hidden="true"></i></button>
-                  <div class="col-md-3 col-sm-12 pull-left">
-                  <span class="serchLabel">From</span><br>
-                    <div class="input-append">
-                      <input type="hidden" name="tbl" value="<?=$tbl;?>">
-                      <input size="16" type="text" value="<?=($startDate) ? $startDate : date('d/m/Y');?>" id="startDate" name="startDate" class="form-control" data-toggle="datepicker" placeholder="Start Date" autocomplete="off">
-                      <span class="add-on"><i class="icon-remove"></i></span>
-                      <span class="add-on"><i class="icon-th"></i></span>
-                    
-                    </div>
-                  </span> 
-                  </div>
-                  </form>
                 </div>
                 <div class="card-body table-responsive">
                   <table class="table table-hover tableSpc">
@@ -113,7 +97,7 @@
                     $countfemaleopd += $item->female_count;
                     $countmaleopd += $item->male_count;
                     endforeach; ?>
-                    <tr>
+<tr>
                       <th style="font-size:16px;">Total</th>
                       <th class="totleTxt" style="text-align: center;"><?=$countmaleopd;?></th>
                       <th class="totleTxt" style="text-align: center;"><?=$countfemaleopd;?></th>
@@ -127,13 +111,3 @@
           </div>
         </div>
       </div>
-    <script type="text/javascript" src="<?=base_url('/assets/js/datepicker.min.js');?>" charset="UTF-8"></script>
-    <script type="text/javascript">
-      $('[data-toggle="datepicker"]').datepicker({
-        autoHide:true,
-        format: 'dd/mm/yyyy'
-      });
-      
-      $("#daily_occupancy_report").submit(function () {
-        });
-    </script> 

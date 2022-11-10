@@ -1,6 +1,6 @@
  <div align="center" style="color:#000000;">
     <h6>Daily Occupancy Report</h6>
-  <h6>Date: - <?=($this->input->post('startDate')) ? date('d/m/Y',strtotime($this->input->post('startDate'))) : date('d/m/Y');?></h6>
+  <h6>Date: - <?=($this->input->post('startDate')) ? $this->input->post('startDate') : date('d/m/Y');?></h6>
 
   </div>
   <div>
